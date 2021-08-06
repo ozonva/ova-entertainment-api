@@ -35,6 +35,7 @@ func Filter(slice []string, words []string) []string {
 		for _, valueWord := range words {
 			if valueSlice == valueWord {
 				isExistInWords = true
+				break
 			}
 		}
 
