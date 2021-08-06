@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/ozonva/ova-entertainment-api/utils"
+	"github.com/ozonva/ova-entertainment-api/internal/utils"
 )
 
 func main() {
