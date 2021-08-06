@@ -28,7 +28,7 @@ func TestFlip(t *testing.T) {
 		"two": 2,
 	}
 
-	if actual := Flip(list); !reflect.DeepEqual(expected, actual) {
+	if actual, _ := Flip(list); !reflect.DeepEqual(expected, actual) {
 		t.Errorf("Flip() = %v, want %v", expected, actual)
 	}
 }
@@ -53,6 +53,6 @@ func TestFilter(t *testing.T) {
 		"seven",
 	}
 	if actual := Filter(slice, words); !reflect.DeepEqual(expected, actual) {
-		t.Errorf("Filter() = %v, want %v", expected, actual)
+		t.Errorf("Filter() = %v, want %v", actual, expected)
 	}
 }

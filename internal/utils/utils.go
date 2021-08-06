@@ -1,49 +1,65 @@
 package utils
 
-func Split(slice []int, size int) [][]int {
-	result := [][]int{}
-	length := len(slice)
-	for index := 0; index < length; index += size {
+import (
+	"errors"
+	"math"
+)
 
-		end := index + size
-		if end > length {
-			end = length
+func Split(slice []int, size int) [][]int {
+	resultSliceSize := int(math.Ceil(float64(len(slice)) / float64(size)))
+	result := make([][]int, resultSliceSize)
+
+	lengthSlice := len(slice)
+	start := 0
+	end := size
+
+	for index := 0; index < resultSliceSize; index++ {
+
+		if end > lengthSlice {
+			end = lengthSlice
 		}
 
-		result = append(result, slice[index:end])
+		result[index] = append(result[index], slice[start:end]...)
+
+		start += size
+		end += size
 	}
 
 	return result
 }
 
-func Flip(list map[int]string) map[string]int {
+func Flip(list map[int]string) (map[string]int, error) {
 	result := make(map[string]int)
 
 	for key, value := range list {
+		if _, ok := result[value]; ok {
+			return nil, errors.New("Not unique value")
+		}
 		result[value] = key
 	}
 
-	return result
+	return result, nil
 }
 
 func Filter(slice []string, words []string) []string {
 
-	result := []string{}
-	isExistInWords := false
-	for _, valueSlice := range slice {
-		isExistInWords = false
-		for _, valueWord := range words {
-			if valueSlice == valueWord {
-				isExistInWords = true
+	index := 0
+	var exist bool
+	for _, value := range slice {
+
+		exist = false
+		for _, word := range words {
+			if word == value {
+				exist = true
 				break
 			}
 		}
 
-		if !isExistInWords {
-			result = append(result, valueSlice)
+		if !exist {
+			slice[index] = value
+			index++
 		}
-
 	}
 
-	return result
+	return slice[:index]
 }
