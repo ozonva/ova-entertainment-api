@@ -42,7 +42,7 @@ func Filter(slice []string, words []string) []string {
 
 	index := 0
 	for _, value := range slice {
-		if _, ok := wordMap[value]; !ok {
+		if _, found := wordMap[value]; !found {
 			result[index] = value
 			index++
 			continue
