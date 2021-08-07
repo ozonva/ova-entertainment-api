@@ -2,28 +2,17 @@ package utils
 
 import (
 	"errors"
-	"math"
 )
 
 func Split(slice []int, size int) [][]int {
-	resultSliceSize := int(math.Ceil(float64(len(slice)) / float64(size)))
-	result := make([][]int, resultSliceSize)
 
-	lengthSlice := len(slice)
-	start := 0
-	end := size
+	result := make([][]int, 0, (len(slice)+size-1)/size)
 
-	for index := 0; index < resultSliceSize; index++ {
-
-		if end > lengthSlice {
-			end = lengthSlice
-		}
-
-		result[index] = append(result[index], slice[start:end]...)
-
-		start += size
-		end += size
+	for size < len(slice) {
+		result = append(result, slice[0:size])
+		slice = slice[size:]
 	}
+	result = append(result, slice)
 
 	return result
 }
@@ -43,23 +32,22 @@ func Flip(list map[int]string) (map[string]int, error) {
 
 func Filter(slice []string, words []string) []string {
 
+	wordMap := make(map[string]bool)
+	for _, word := range words {
+		wordMap[word] = true
+	}
+
+	result := make([]string, len(slice))
+	copy(result, slice)
+
 	index := 0
-	var exist bool
 	for _, value := range slice {
-
-		exist = false
-		for _, word := range words {
-			if word == value {
-				exist = true
-				break
-			}
-		}
-
-		if !exist {
-			slice[index] = value
+		if _, ok := wordMap[value]; !ok {
+			result[index] = value
 			index++
+			continue
 		}
 	}
 
-	return slice[:index]
+	return result[:index]
 }
