@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	//"github.com/ozonva/ova-entertainment-api/internal/utils"
 )
 
 func main() {

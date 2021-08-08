@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"reflect"
+	testify "github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -13,9 +13,11 @@ func TestSplit(t *testing.T) {
 	}
 	slice := []int{1, 2, 3, 4, 5}
 	size := 2
-	if actual := Split(slice, size); !reflect.DeepEqual(expected, actual) {
-		t.Errorf("Split() = %v, want %v", expected, actual)
-	}
+
+	actual := Split(slice, size)
+
+	assert := testify.New(t)
+	assert.Equal(actual, expected)
 }
 
 func TestFlip(t *testing.T) {
@@ -28,9 +30,10 @@ func TestFlip(t *testing.T) {
 		"two": 2,
 	}
 
-	if actual, _ := Flip(list); !reflect.DeepEqual(expected, actual) {
-		t.Errorf("Flip() = %v, want %v", expected, actual)
-	}
+	actual, _ := Flip(list)
+
+	assert := testify.New(t)
+	assert.Equal(actual, expected)
 }
 
 func TestFilter(t *testing.T) {
@@ -52,7 +55,9 @@ func TestFilter(t *testing.T) {
 		"six",
 		"seven",
 	}
-	if actual := Filter(slice, words); !reflect.DeepEqual(expected, actual) {
-		t.Errorf("Filter() = %v, want %v", actual, expected)
-	}
+
+	actual := Filter(slice, words)
+
+	assert := testify.New(t)
+	assert.Equal(actual, expected)
 }

@@ -32,9 +32,9 @@ func Flip(list map[int]string) (map[string]int, error) {
 
 func Filter(slice []string, words []string) []string {
 
-	wordMap := make(map[string]bool)
+	wordMap := make(map[string]struct{})
 	for _, word := range words {
-		wordMap[word] = true
+		wordMap[word] = struct{}{}
 	}
 
 	result := make([]string, len(slice))
@@ -45,7 +45,6 @@ func Filter(slice []string, words []string) []string {
 		if _, found := wordMap[value]; !found {
 			result[index] = value
 			index++
-			continue
 		}
 	}
 
