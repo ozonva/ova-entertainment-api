@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"github.com/ozonva/ova-entertainment-api/internal/entities"
 )
 
 func Split(slice []int, size int) [][]int {
@@ -49,4 +50,30 @@ func Filter(slice []string, words []string) []string {
 	}
 
 	return result[:index]
+}
+
+func SplitToBulks(slice []entities.Entertainment, size uint) [][]entities.Entertainment {
+	batchSize := int(size)
+	result := make([][]entities.Entertainment, 0, (len(slice)+batchSize-1)/batchSize)
+	for batchSize < len(slice) {
+		result = append(result, slice[0:batchSize])
+		slice = slice[batchSize:]
+	}
+	result = append(result, slice)
+
+	return result
+}
+
+func SliceToMap(slice []entities.Entertainment) (map[uint64]entities.Entertainment, error) {
+	result := make(map[uint64]entities.Entertainment)
+
+	for _, entity := range slice {
+		if _, ok := result[entity.UserID]; ok {
+			return nil, errors.New("Not unique value")
+		}
+
+		result[entity.UserID] = entity
+	}
+
+	return result, nil
 }
