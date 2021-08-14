@@ -6,45 +6,49 @@ import (
 )
 
 type Entertainment struct {
-	UserID      uint64
-	Title       string
-	Description string
-	Date        time.Time
+	userID      uint64
+	title       string
+	description string
+	date        time.Time
 }
 
 func New(UserID uint64) Entertainment {
 	entity := Entertainment{
-		UserID: UserID,
-		Date:   time.Now().Truncate(24*time.Hour).AddDate(0, 0, 7),
+		userID: UserID,
+		date:   time.Now().Truncate(24*time.Hour).AddDate(0, 0, 7),
 	}
 
 	return entity
 }
 
+func (e Entertainment) GetUserID() uint64 {
+	return e.userID
+}
+
 func (e *Entertainment) String() string {
-	return fmt.Sprintf("Entertainment name: %s, description: %s", e.Title, e.Description)
+	return fmt.Sprintf("Entertainment name: %s, description: %s", e.title, e.description)
 }
 
 func (e *Entertainment) SetTitle(title string) {
-	e.Title = title
+	e.title = title
 }
 
 func (e Entertainment) GetTitle() string {
-	return e.Title
+	return e.title
 }
 
 func (e *Entertainment) SetDate(date time.Time) {
-	e.Date = date
+	e.date = date
 }
 
 func (e Entertainment) GetDate() time.Time {
-	return e.Date
+	return e.date
 }
 
 func (e *Entertainment) SetDescription(description string) {
-	e.Description = description
+	e.description = description
 }
 
 func (e Entertainment) GetDescription() string {
-	return e.Description
+	return e.description
 }

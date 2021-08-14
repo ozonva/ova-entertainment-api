@@ -11,7 +11,7 @@ func TestNew(t *testing.T) {
 	entertainment := New(userID)
 
 	assert := testify.New(t)
-	assert.Equal(entertainment.UserID, userID)
+	assert.Equal(entertainment.GetUserID(), userID)
 }
 
 func TestString(t *testing.T) {
