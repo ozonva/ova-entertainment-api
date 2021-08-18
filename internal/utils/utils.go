@@ -2,7 +2,7 @@ package utils
 
 import (
 	"errors"
-	"github.com/ozonva/ova-entertainment-api/internal/entities"
+	"github.com/ozonva/ova-entertainment-api/internal/models"
 )
 
 func Split(slice []int, size int) [][]int {
@@ -52,9 +52,9 @@ func Filter(slice []string, words []string) []string {
 	return result[:index]
 }
 
-func SplitToBulks(slice []entities.Entertainment, size uint) [][]entities.Entertainment {
+func SplitToBulks(slice []models.Entertainment, size uint) [][]models.Entertainment {
 	batchSize := int(size)
-	result := make([][]entities.Entertainment, 0, (len(slice)+batchSize-1)/batchSize)
+	result := make([][]models.Entertainment, 0, (len(slice)+batchSize-1)/batchSize)
 	for batchSize < len(slice) {
 		result = append(result, slice[0:batchSize])
 		slice = slice[batchSize:]
@@ -64,8 +64,8 @@ func SplitToBulks(slice []entities.Entertainment, size uint) [][]entities.Entert
 	return result
 }
 
-func SliceToMap(slice []entities.Entertainment) (map[uint64]entities.Entertainment, error) {
-	result := make(map[uint64]entities.Entertainment)
+func SliceToMap(slice []models.Entertainment) (map[uint64]models.Entertainment, error) {
+	result := make(map[uint64]models.Entertainment)
 
 	for _, entity := range slice {
 		userID := entity.GetUserID()
