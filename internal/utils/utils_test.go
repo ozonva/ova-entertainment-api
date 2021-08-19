@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/ozonva/ova-entertainment-api/internal/entities"
+	"github.com/ozonva/ova-entertainment-api/internal/models"
 	testify "github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -64,13 +64,13 @@ func TestFilter(t *testing.T) {
 }
 
 func TestSplitToBulks(t *testing.T) {
-	entertainment1 := entities.New(1)
-	entertainment2 := entities.New(2)
-	entertainment3 := entities.New(3)
-	entertainment4 := entities.New(4)
-	entertainment5 := entities.New(5)
+	entertainment1 := models.New(1)
+	entertainment2 := models.New(2)
+	entertainment3 := models.New(3)
+	entertainment4 := models.New(4)
+	entertainment5 := models.New(5)
 
-	slice := []entities.Entertainment{
+	slice := []models.Entertainment{
 		entertainment1,
 		entertainment2,
 		entertainment3,
@@ -78,7 +78,7 @@ func TestSplitToBulks(t *testing.T) {
 		entertainment5,
 	}
 
-	expected := [][]entities.Entertainment{
+	expected := [][]models.Entertainment{
 		{
 			entertainment1,
 			entertainment2,
@@ -96,20 +96,20 @@ func TestSplitToBulks(t *testing.T) {
 }
 
 func TestSliceToMap(t *testing.T) {
-	entertainment1 := entities.New(1)
-	entertainment2 := entities.New(2)
-	entertainment3 := entities.New(3)
-	entertainment4 := entities.New(4)
-	entertainment5 := entities.New(5)
+	entertainment1 := models.New(1)
+	entertainment2 := models.New(2)
+	entertainment3 := models.New(3)
+	entertainment4 := models.New(4)
+	entertainment5 := models.New(5)
 
-	slice := []entities.Entertainment{
+	slice := []models.Entertainment{
 		entertainment1,
 		entertainment2,
 		entertainment3,
 		entertainment4,
 		entertainment5,
 	}
-	expected := map[uint64]entities.Entertainment{
+	expected := map[uint64]models.Entertainment{
 		1: entertainment1,
 		2: entertainment2,
 		3: entertainment3,
