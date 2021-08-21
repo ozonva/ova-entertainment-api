@@ -24,7 +24,6 @@ type saver struct {
 	capacity uint
 	flusher  flusher.Flusher
 	models   []models.Entertainment
-	SaveCh   chan []models.Entertainment
 }
 
 func NewSaver(capacity uint, flusher flusher.Flusher) Saver {
@@ -38,7 +37,6 @@ func NewSaver(capacity uint, flusher flusher.Flusher) Saver {
 func (s *saver) Init() {
 	s.ticker = time.NewTicker(TickerInterval * time.Second)
 	s.ch = make(chan struct{})
-	s.SaveCh = make(chan []models.Entertainment)
 
 	go func(ch <-chan struct{}) {
 		for {
