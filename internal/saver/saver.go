@@ -13,7 +13,7 @@ const TickerInterval = 3
 
 type Saver interface {
 	Save(entity models.Entertainment) error
-	Init()
+	Init(wg *sync.WaitGroup)
 	Close()
 }
 
@@ -34,15 +34,16 @@ func NewSaver(capacity uint, flusher flusher.Flusher) Saver {
 	}
 }
 
-func (s *saver) Init() {
+func (s *saver) Init(wg *sync.WaitGroup) {
 	s.ticker = time.NewTicker(TickerInterval * time.Second)
 	s.ch = make(chan struct{})
+	defer wg.Done()
 
 	go func(ch <-chan struct{}) {
 		for {
 			select {
 			case _, ok := <-ch:
-				if ok {
+				if !ok {
 					s.ticker.Stop()
 					return
 				}
