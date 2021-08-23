@@ -7,7 +7,6 @@ import (
 	"github.com/ozonva/ova-entertainment-api/internal/models"
 	"github.com/ozonva/ova-entertainment-api/internal/repo"
 	"github.com/stretchr/testify/assert"
-	"sync"
 )
 
 var _ = Describe("Saver", func() {
@@ -37,11 +36,8 @@ var _ = Describe("Saver", func() {
 	Context("With valid entities slice", func() {
 		It("should all save", func() {
 
-			var wg sync.WaitGroup
-			wg.Add(1)
-
 			saver := NewSaver(5, f)
-			saver.Init(&wg)
+			saver.Init()
 			for _, v := range entities {
 				err := saver.Save(v)
 
@@ -49,7 +45,6 @@ var _ = Describe("Saver", func() {
 			}
 
 			saver.Close()
-			wg.Wait()
 		})
 	})
 
@@ -57,11 +52,9 @@ var _ = Describe("Saver", func() {
 		It("should errors in save", func() {
 
 			entities = append(entities, models.New(6))
-			var wg sync.WaitGroup
-			wg.Add(1)
 
 			saver := NewSaver(5, f)
-			saver.Init(&wg)
+			saver.Init()
 			for index, v := range entities {
 				err := saver.Save(v)
 
@@ -73,7 +66,6 @@ var _ = Describe("Saver", func() {
 			}
 
 			saver.Close()
-			wg.Wait()
 		})
 	})
 })
