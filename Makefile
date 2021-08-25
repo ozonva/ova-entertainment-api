@@ -23,7 +23,11 @@ generate:
 
 .PHONY: test
 test:
-	GOBIN=$(LOCAL_BIN) go test ./...
+	GOBIN=$(LOCAL_BIN) go test -v ./...
+
+.PHONY: .build
+.build:
+	GOBIN=$(LOCAL_BIN) go build -o $(LOCAL_BIN)/lecture-6-demo cmd/lecture-6-demo/main.go
 
 .PHONY: run
 run:
