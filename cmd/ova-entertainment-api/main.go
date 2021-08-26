@@ -3,7 +3,17 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
+	"github.com/ozonva/ova-entertainment-api/internal/api"
+	"google.golang.org/grpc"
+	"log"
+	"net"
 	"os"
+
+	desc "github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api/github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api"
+)
+
+const (
+	grpcPort = ":8082"
 )
 
 func ReadCsvFile(fileName string) {
@@ -30,10 +40,24 @@ func ReadCsvFile(fileName string) {
 	}
 }
 
-func main() {
-
-	for i := 0; i < 5; i++ {
-		ReadCsvFile("file.csv")
+func run() error {
+	listen, err := net.Listen("tcp", grpcPort)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
 	}
 
+	s := grpc.NewServer()
+	desc.RegisterApiServer(s, api.NewApiServer())
+
+	if err := s.Serve(listen); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
+
+	return nil
+}
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
 }

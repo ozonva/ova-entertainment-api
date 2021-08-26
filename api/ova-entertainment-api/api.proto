@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package ova.entertainment.api;
+
+option go_package = "github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api;ova_entertainment_api";
+
+service api {
+    rpc CreateEntertainmentV1(CreateEntertainmentV1Request) returns (EntertainmentV1Response) {}
+    rpc DescribeEntertainmentV1(DescribeEntertainmentV1Request) returns (EntertainmentV1Response) {}
+    rpc ListEntertainmentsV1(ListEntertainmentV1Request) returns (ListEntertainmentsV1Response) {}
+    rpc RemoveEntertainmentV1(RemoveEntertainmentV1Request) returns (RemoveV1Response) {}
+}
+
+message CreateEntertainmentV1Request {
+    uint64 userID = 1;
+    string title = 2;
+    string description = 3;
+}
+
+message DescribeEntertainmentV1Request {
+    uint64 ID = 1;
+    uint64 userID = 2;
+    string title = 3;
+    string description = 4;
+}
+
+message ListEntertainmentV1Request {
+    uint32 limit = 1;
+    uint32 offset = 2;
+}
+
+message RemoveEntertainmentV1Request {
+    uint64 ID = 1;
+}
+
+message ListEntertainmentsV1Response {
+    repeated EntertainmentV1Response list = 1;
+}
+
+message EntertainmentV1Response {
+    uint64 ID = 1;
+    uint64 userID = 2;
+    string title = 3;
+    string description = 4;
+    string date = 5;
+}
+
+message RemoveV1Response {
+    bool status = 1;
+}
