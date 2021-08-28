@@ -68,7 +68,7 @@ func SliceToMap(slice []models.Entertainment) (map[uint64]models.Entertainment, 
 	result := make(map[uint64]models.Entertainment)
 
 	for _, entity := range slice {
-		userID := entity.GetUserID()
+		userID := entity.UserID
 		if _, ok := result[userID]; ok {
 			return nil, errors.New("Not unique value")
 		}

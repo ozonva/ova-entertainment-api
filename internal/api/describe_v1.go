@@ -2,18 +2,23 @@ package api
 
 import (
 	"context"
+	"github.com/ozonva/ova-entertainment-api/internal/models"
 	desc "github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api/github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api"
-	"github.com/rs/zerolog/log"
+	"time"
 )
 
-func (s *Server) DescribeEntertainmentV1(ctx context.Context, req *desc.DescribeEntertainmentV1Request) (*desc.EntertainmentV1Response, error) {
+func (s *ApiServer) DescribeEntertainmentV1(ctx context.Context, req *desc.DescribeEntertainmentV1Request) (*desc.EntertainmentV1Response, error) {
 
-	log.Info().Msg("Run DescribeEntertainmentV1")
+	entertainment, err := s.repo.DescribeEntertainment(models.Entertainment{
+		ID:          req.ID,
+		UserID:      req.UserID,
+		Title:       req.Title,
+		Description: req.Description,
+		Date:        time.Time{},
+	})
+	if err != nil {
+		return nil, err
+	}
 
-	return &desc.EntertainmentV1Response{
-		ID:          42,
-		UserID:      1,
-		Title:       "Football",
-		Description: "Real Madrid vs Barcelona",
-	}, nil
+	return entertainment.Marshall(), nil
 }

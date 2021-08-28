@@ -64,11 +64,11 @@ func TestFilter(t *testing.T) {
 }
 
 func TestSplitToBulks(t *testing.T) {
-	entertainment1 := models.New(1)
-	entertainment2 := models.New(2)
-	entertainment3 := models.New(3)
-	entertainment4 := models.New(4)
-	entertainment5 := models.New(5)
+	entertainment1 := models.New(1, "title", "description")
+	entertainment2 := models.New(2, "title", "description")
+	entertainment3 := models.New(3, "title", "description")
+	entertainment4 := models.New(4, "title", "description")
+	entertainment5 := models.New(5, "title", "description")
 
 	slice := []models.Entertainment{
 		entertainment1,
@@ -96,11 +96,11 @@ func TestSplitToBulks(t *testing.T) {
 }
 
 func TestSliceToMap(t *testing.T) {
-	entertainment1 := models.New(1)
-	entertainment2 := models.New(2)
-	entertainment3 := models.New(3)
-	entertainment4 := models.New(4)
-	entertainment5 := models.New(5)
+	entertainment1 := models.New(1, "title", "description")
+	entertainment2 := models.New(2, "title", "description")
+	entertainment3 := models.New(3, "title", "description")
+	entertainment4 := models.New(4, "title", "description")
+	entertainment5 := models.New(5, "title", "description")
 
 	slice := []models.Entertainment{
 		entertainment1,

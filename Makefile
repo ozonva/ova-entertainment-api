@@ -1,4 +1,7 @@
+include .env
+
 LOCAL_BIN:=$(CURDIR)/bin
+DBSTRING:="postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5434/$(POSTGRES_DB)?sslmode=disable"
 
 .PHONY: deps
 deps: .install-go-deps
@@ -28,3 +31,9 @@ test:
 .PHONY: run
 run:
 	GOBIN=$(LOCAL_BIN) go run cmd/ova-entertainment-api/main
+
+.PHONY: migrate-up
+migrate-up:
+	GOOSE_DRIVER=postgres GOOSE_DBSTRING=$(DBSTRING) goose -dir migration status
+	GOOSE_DRIVER=postgres GOOSE_DBSTRING=$(DBSTRING) goose -dir migration up
+

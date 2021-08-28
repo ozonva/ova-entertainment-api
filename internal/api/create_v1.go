@@ -2,18 +2,22 @@ package api
 
 import (
 	"context"
+	"github.com/ozonva/ova-entertainment-api/internal/flusher"
+	"github.com/ozonva/ova-entertainment-api/internal/models"
 	desc "github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api/github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api"
-	"github.com/rs/zerolog/log"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (s *Server) CreateEntertainmentV1(ctx context.Context, req *desc.CreateEntertainmentV1Request) (*desc.EntertainmentV1Response, error) {
+func (s *ApiServer) CreateEntertainmentV1(ctx context.Context, req *desc.CreateEntertainmentV1Request) (*emptypb.Empty, error) {
 
-	log.Info().Msg("Run CreateEntertainmentV1")
+	f := flusher.NewFlusher(2, s.repo)
+	err := f.Flush([]models.Entertainment{
+		models.New(req.UserID, req.Title, req.Description),
+	})
 
-	return &desc.EntertainmentV1Response{
-		ID:          42,
-		UserID:      1,
-		Title:       "Football",
-		Description: "Real Madrid vs Barcelona",
-	}, nil
+	if err != nil {
+		return nil, err
+	}
+
+	return &emptypb.Empty{}, nil
 }

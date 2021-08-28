@@ -2,3 +2,5 @@
 *.csv
 *.coverprofile
 .bin
+.docker/db/pgdata
+coverage.*

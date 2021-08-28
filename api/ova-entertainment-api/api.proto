@@ -1,14 +1,16 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 package ova.entertainment.api;
 
 option go_package = "github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api;ova_entertainment_api";
 
 service api {
-    rpc CreateEntertainmentV1(CreateEntertainmentV1Request) returns (EntertainmentV1Response) {}
+    rpc CreateEntertainmentV1(CreateEntertainmentV1Request) returns (google.protobuf.Empty) {}
     rpc DescribeEntertainmentV1(DescribeEntertainmentV1Request) returns (EntertainmentV1Response) {}
     rpc ListEntertainmentsV1(ListEntertainmentV1Request) returns (ListEntertainmentsV1Response) {}
-    rpc RemoveEntertainmentV1(RemoveEntertainmentV1Request) returns (RemoveV1Response) {}
+    rpc RemoveEntertainmentV1(RemoveEntertainmentV1Request) returns (google.protobuf.Empty) {}
 }
 
 message CreateEntertainmentV1Request {
@@ -43,8 +45,4 @@ message EntertainmentV1Response {
     string title = 3;
     string description = 4;
     string date = 5;
-}
-
-message RemoveV1Response {
-    bool status = 1;
 }
