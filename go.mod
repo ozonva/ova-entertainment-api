@@ -13,6 +13,7 @@ require (
 	github.com/golang/protobuf v1.5.2
 	github.com/jackc/pgx/v4 v4.13.0
 	github.com/jmoiron/sqlx v1.3.4
+	github.com/joho/godotenv v1.3.0
 	github.com/jpoles1/gopherbadger v2.5.0+incompatible // indirect
 	github.com/mattn/go-sqlite3 v1.14.8 // indirect
 	github.com/onsi/ginkgo v1.16.4

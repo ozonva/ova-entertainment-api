@@ -27,15 +27,14 @@ var _ = Describe("Api", func() {
 		mockCtrl.Finish()
 	})
 
-	Context("Api create v1", func() {
+	Context("API: CreateEntertainmentV1", func() {
 		It("should not error", func() {
 
 			mockRepo.EXPECT().AddEntertainments([]models.Entertainment{
 				models.New(2, "Title", "Description"),
 			}).Return(nil).Times(1)
 
-			// @todo узнать про r поменять на sqlx
-			api := &ApiServer{repo: mockRepo}
+			api := NewApiServer(mockRepo)
 			_, err := api.CreateEntertainmentV1(cntx, &desc.CreateEntertainmentV1Request{
 				UserID:      2,
 				Title:       "Title",
@@ -46,14 +45,14 @@ var _ = Describe("Api", func() {
 		})
 	})
 
-	Context("Api describe v1", func() {
+	Context("API: DescribeEntertainmentV1", func() {
 		It("should not error", func() {
 
 			model := models.New(2, "Title", "Description")
 			model.ID = 1
 			mockRepo.EXPECT().DescribeEntertainment(model).Return(&model, nil).Times(1)
 
-			api := &ApiServer{repo: mockRepo}
+			api := NewApiServer(mockRepo)
 			_, err := api.DescribeEntertainmentV1(cntx, &desc.DescribeEntertainmentV1Request{
 				ID:          1,
 				UserID:      2,
@@ -65,20 +64,20 @@ var _ = Describe("Api", func() {
 		})
 	})
 
-	Context("Api remove v1", func() {
+	Context("API: RemoveEntertainmentV1", func() {
 		It("should not error", func() {
 
 			ID := uint64(1)
 			mockRepo.EXPECT().RemoveEntertainment(ID).Return(nil).Times(1)
 
-			api := &ApiServer{repo: mockRepo}
+			api := NewApiServer(mockRepo)
 			_, err := api.RemoveEntertainmentV1(cntx, &desc.RemoveEntertainmentV1Request{ID: 1})
 
 			assert.Nil(GinkgoT(), err)
 		})
 	})
 
-	Context("Api list v1", func() {
+	Context("API: ListEntertainmentsV1", func() {
 		It("should not error", func() {
 
 			limit := uint32(100)
@@ -88,7 +87,7 @@ var _ = Describe("Api", func() {
 
 			mockRepo.EXPECT().ListEntertainments(limit, offset).Return(models, nil).Times(1)
 
-			api := &ApiServer{repo: mockRepo}
+			api := NewApiServer(mockRepo)
 			_, err := api.ListEntertainmentsV1(cntx, &desc.ListEntertainmentV1Request{
 				Limit:  uint32(100),
 				Offset: uint32(10),

@@ -37,3 +37,14 @@ migrate-up:
 	GOOSE_DRIVER=postgres GOOSE_DBSTRING=$(DBSTRING) goose -dir migration status
 	GOOSE_DRIVER=postgres GOOSE_DBSTRING=$(DBSTRING) goose -dir migration up
 
+#for fun @todo manualcov
+.PHONY: create-badge
+create-badge:
+	go test ./... -coverprofile cover.out.tmp
+	cat cover.out.tmp | grep -v "mock_" > coverage.out
+	go tool cover -func coverage.out | awk 'END {print $3+0}'
+	rm cover.out.tmp
+	rm coverage.out
+	#gopherbadger -md="README.md" -manualcov=
+
+

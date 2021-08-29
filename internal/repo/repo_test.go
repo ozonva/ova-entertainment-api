@@ -28,7 +28,7 @@ var _ = Describe("Repo", func() {
 		db.Close()
 	})
 
-	Context("Repo remove v1", func() {
+	Context("RemoveEntertainment", func() {
 		It("should not error", func() {
 
 			ID := uint64(1)
@@ -45,7 +45,7 @@ var _ = Describe("Repo", func() {
 		})
 	})
 
-	Context("Repo create v1", func() {
+	Context("AddEntertainments", func() {
 		It("should not error", func() {
 
 			model := models.New(1, "Title", "Description")
@@ -63,7 +63,7 @@ var _ = Describe("Repo", func() {
 		})
 	})
 
-	Context("Repo describe v1", func() {
+	Context("DescribeEntertainment", func() {
 		It("should not error", func() {
 
 			model := models.New(1, "Title", "Description")
@@ -80,7 +80,7 @@ var _ = Describe("Repo", func() {
 		})
 	})
 
-	Context("Repo list v1", func() {
+	Context("ListEntertainments", func() {
 		It("should not error", func() {
 
 			rows := sqlxmock.NewRows([]string{"id", "user_id", "title", "description"}).AddRow(1, 1, "Title", "Description")
