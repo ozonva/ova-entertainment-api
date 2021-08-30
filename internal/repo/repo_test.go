@@ -52,7 +52,7 @@ var _ = Describe("Repo", func() {
 
 			result := sqlxmock.NewResult(1, 1)
 			mock.
-				ExpectExec(regexp.QuoteMeta(`INSERT INTO entertainments (user_id, title, description) VALUES (?, ?, ?)`)).
+				ExpectExec(regexp.QuoteMeta(`INSERT INTO entertainments (user_id,title,description) VALUES ($1,$2,$3)`)).
 				WithArgs(model.UserID, model.Title, model.Description).
 				WillReturnResult(result)
 
@@ -69,7 +69,7 @@ var _ = Describe("Repo", func() {
 			model := models.New(1, "Title", "Description")
 			result := sqlxmock.NewResult(1, 1)
 			mock.
-				ExpectExec(regexp.QuoteMeta(`UPDATE entertainments SET title = ?, description = ? WHERE id = ?`)).
+				ExpectExec(regexp.QuoteMeta(`UPDATE entertainments SET title = $1, description = $2 WHERE id = $3`)).
 				WithArgs(model.Title, model.Description, model.ID).
 				WillReturnResult(result)
 
@@ -85,8 +85,7 @@ var _ = Describe("Repo", func() {
 
 			rows := sqlxmock.NewRows([]string{"id", "user_id", "title", "description"}).AddRow(1, 1, "Title", "Description")
 			mock.
-				ExpectQuery(regexp.QuoteMeta(`SELECT * FROM entertainments ORDER BY id DESC LIMIT $1 OFFSET $2`)).
-				WithArgs(100, 10).
+				ExpectQuery(regexp.QuoteMeta(`SELECT * FROM entertainments ORDER BY id DESC LIMIT 100 OFFSET 10`)).
 				WillReturnRows(rows)
 
 			r := NewRepo(db)

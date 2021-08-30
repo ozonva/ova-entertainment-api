@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/ClickHouse/clickhouse-go v1.4.5 // indirect
+	github.com/Masterminds/squirrel v1.5.0
 	github.com/denisenkom/go-mssqldb v0.10.0 // indirect
 	github.com/fatih/color v1.12.0 // indirect
 	github.com/fogleman/gg v1.3.0 // indirect

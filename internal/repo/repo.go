@@ -1,8 +1,8 @@
 package repo
 
 import (
-	"database/sql"
 	"errors"
+	"github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 	"github.com/ozonva/ova-entertainment-api/internal/models"
 )
@@ -12,41 +12,61 @@ type Repo interface {
 	ListEntertainments(limit uint32, offset uint32) ([]models.Entertainment, error)
 	DescribeEntertainment(model models.Entertainment) (*models.Entertainment, error)
 	RemoveEntertainment(ID uint64) error
-	FindEntertainment(ID uint64, title string) (*models.Entertainment, error)
 }
 
 type repo struct {
-	db *sqlx.DB
+	db      *sqlx.DB
+	builder squirrel.StatementBuilderType
 }
 
 func NewRepo(db *sqlx.DB) Repo {
-	return &repo{db: db}
+	return &repo{
+		db:      db,
+		builder: squirrel.StatementBuilder.RunWith(db).PlaceholderFormat(squirrel.Dollar),
+	}
 }
 
 func (r *repo) AddEntertainments(models []models.Entertainment) error {
 
-	query := "INSERT INTO entertainments (user_id, title, description) VALUES (:user_id, :title, :description)"
-	_, err := r.db.NamedExec(query, models)
+	builder := r.builder.
+		Insert("entertainments").
+		Columns("user_id", "title", "description")
+
+	for _, model := range models {
+		builder = builder.Values(model.UserID, model.Title, model.Description)
+	}
+
+	_, err := builder.Exec()
 
 	return err
 }
 
 func (r *repo) ListEntertainments(limit uint32, offset uint32) ([]models.Entertainment, error) {
 
+	var entertainment models.Entertainment
 	result := make([]models.Entertainment, 0, limit)
 
-	query := "SELECT * FROM entertainments ORDER BY id DESC LIMIT $1 OFFSET $2"
-	rows, err := r.db.Queryx(query, limit, offset)
+	query, args, err := r.builder.
+		Select("*").
+		From("entertainments").
+		OrderBy("id DESC").
+		Limit(uint64(limit)).
+		Offset(uint64(offset)).
+		ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := r.db.Queryx(query, args...)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
+
 	for rows.Next() {
-		var entertainment models.Entertainment
 		if err := rows.StructScan(&entertainment); err != nil {
 			return nil, err
 		}
-
 		result = append(result, entertainment)
 	}
 	if err := rows.Err(); err != nil {
@@ -57,8 +77,13 @@ func (r *repo) ListEntertainments(limit uint32, offset uint32) ([]models.Enterta
 }
 
 func (r *repo) DescribeEntertainment(model models.Entertainment) (*models.Entertainment, error) {
-	query := "UPDATE entertainments SET title = :title, description = :description WHERE id = :id"
-	result, err := r.db.NamedExec(query, model)
+	builder := r.builder.
+		Update("entertainments").
+		Set("title", model.Title).
+		Set("description", model.Description).
+		Where(squirrel.Eq{"id": model.ID})
+
+	result, err := builder.Exec()
 	if err != nil {
 		return nil, err
 	}
@@ -72,23 +97,11 @@ func (r *repo) DescribeEntertainment(model models.Entertainment) (*models.Entert
 }
 
 func (r *repo) RemoveEntertainment(ID uint64) error {
-	query := "DELETE FROM entertainments WHERE id = $1"
-	_, err := r.db.Exec(query, ID)
+	builder := r.builder.
+		Delete("entertainments").
+		Where(squirrel.Eq{"id": ID})
+
+	_, err := builder.Exec()
 
 	return err
-}
-
-func (r *repo) FindEntertainment(userID uint64, title string) (*models.Entertainment, error) {
-	query := "SELECT * FROM entertainments WHERE user_id = $1 and title = $2"
-	row := r.db.QueryRowx(query, userID, title)
-	entertainment := models.Entertainment{}
-
-	err := row.StructScan(&entertainment)
-	if err == sql.ErrNoRows {
-		return nil, errors.New("Not found")
-	} else if err != nil {
-		return nil, err
-	}
-
-	return &entertainment, nil
 }
