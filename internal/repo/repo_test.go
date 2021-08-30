@@ -89,7 +89,7 @@ var _ = Describe("Repo", func() {
 				WillReturnRows(rows)
 
 			r := NewRepo(db)
-			_, err = r.ListEntertainments(100, 10) // @todo _
+			_, err = r.ListEntertainments(100, 10)
 
 			assert.Nil(GinkgoT(), err)
 		})
