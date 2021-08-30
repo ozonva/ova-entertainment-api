@@ -21,14 +21,13 @@ type repo struct {
 
 func NewRepo(db *sqlx.DB) Repo {
 	return &repo{
-		db:      db,
-		builder: squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar),
+		db: db,
 	}
 }
 
 func (r *repo) AddEntertainments(models []models.Entertainment) error {
 
-	builder := r.builder.
+	builder := squirrel.
 		Insert("entertainments").
 		Columns("user_id", "title", "description")
 
@@ -51,7 +50,7 @@ func (r *repo) ListEntertainments(limit uint32, offset uint32) ([]models.Enterta
 	var entertainment models.Entertainment
 	result := make([]models.Entertainment, 0, limit)
 
-	query, args, err := r.builder.
+	query, args, err := squirrel.
 		Select("*").
 		From("entertainments").
 		OrderBy("id DESC").
@@ -83,7 +82,7 @@ func (r *repo) ListEntertainments(limit uint32, offset uint32) ([]models.Enterta
 }
 
 func (r *repo) DescribeEntertainment(model models.Entertainment) (*models.Entertainment, error) {
-	query, args, err := r.builder.
+	query, args, err := squirrel.
 		Update("entertainments").
 		Set("title", model.Title).
 		Set("description", model.Description).
@@ -108,7 +107,7 @@ func (r *repo) DescribeEntertainment(model models.Entertainment) (*models.Entert
 }
 
 func (r *repo) RemoveEntertainment(ID uint64) error {
-	query, args, err := r.builder.
+	query, args, err := squirrel.
 		Delete("entertainments").
 		Where(squirrel.Eq{"id": ID}).
 		ToSql()
