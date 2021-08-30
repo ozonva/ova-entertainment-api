@@ -13,6 +13,11 @@ func Connect(DSN string) *sqlx.DB {
 	if err != nil {
 		log.Fatalf("connect do db error %v", err)
 	}
-	return db
 
+	err = db.Ping()
+	if err != nil {
+		log.Fatalf("failed to connect to db: %v", err)
+	}
+
+	return db
 }

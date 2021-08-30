@@ -37,7 +37,6 @@ var _ = Describe("Saver", func() {
 		It("should all save", func() {
 
 			saver := NewSaver(5, f)
-			saver.Init()
 			for _, v := range entities {
 				err := saver.Save(v)
 
@@ -54,7 +53,6 @@ var _ = Describe("Saver", func() {
 			entities = append(entities, models.New(6, "title", "description"))
 
 			saver := NewSaver(5, f)
-			saver.Init()
 			for index, v := range entities {
 				err := saver.Save(v)
 

@@ -13,7 +13,6 @@ const TickerInterval = 3
 
 type Saver interface {
 	Save(entity models.Entertainment) error
-	Init()
 	Close()
 }
 
@@ -27,14 +26,18 @@ type saver struct {
 }
 
 func NewSaver(capacity uint, flusher flusher.Flusher) Saver {
-	return &saver{
+	s := &saver{
 		capacity: capacity,
 		flusher:  flusher,
 		models:   make([]models.Entertainment, 0, capacity),
 	}
+
+	s.init()
+
+	return s
 }
 
-func (s *saver) Init() {
+func (s *saver) init() {
 	s.ticker = time.NewTicker(TickerInterval * time.Second)
 	s.ch = make(chan struct{})
 
