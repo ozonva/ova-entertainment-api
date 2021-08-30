@@ -28,9 +28,9 @@ var _ = Describe("Flusher", func() {
 
 	Context("With valid entities slice", func() {
 		It("should all save", func() {
-			mockRepo.EXPECT().AddEntities(entities[0:2]).Return(nil).Times(1)
-			mockRepo.EXPECT().AddEntities(entities[2:4]).Return(nil).Times(1)
-			mockRepo.EXPECT().AddEntities(entities[4:]).Return(nil).Times(1)
+			mockRepo.EXPECT().AddEntertainments(entities[0:2]).Return(nil).Times(1)
+			mockRepo.EXPECT().AddEntertainments(entities[2:4]).Return(nil).Times(1)
+			mockRepo.EXPECT().AddEntertainments(entities[4:]).Return(nil).Times(1)
 
 			flusher := NewFlusher(2, mockRepo)
 			notSaved := flusher.Flush(entities)
@@ -41,25 +41,25 @@ var _ = Describe("Flusher", func() {
 
 	Context("With some errors entities slice", func() {
 		It("should return errors", func() {
-			mockRepo.EXPECT().AddEntities(entities[0:2]).Return(nil).Times(1)
-			mockRepo.EXPECT().AddEntities(entities[2:4]).Return(errors.New("Can`t save slice")).Times(1)
-			mockRepo.EXPECT().AddEntities(entities[4:]).Return(nil).Times(1)
+			mockRepo.EXPECT().AddEntertainments(entities[0:2]).Return(nil).Times(1)
+			mockRepo.EXPECT().AddEntertainments(entities[2:4]).Return(nil).Times(1)
+			mockRepo.EXPECT().AddEntertainments(entities[4:]).Return(errors.New("Can`t save slice")).Times(1)
 
 			flusher := NewFlusher(2, mockRepo)
-			notSaved := flusher.Flush(entities)
+			err := flusher.Flush(entities)
 
-			assert.Equal(GinkgoT(), notSaved, entities[2:4])
+			assert.Error(GinkgoT(), err)
 		})
 	})
 
 })
 
 func dataProviderEntities() []models.Entertainment {
-	entertainment1 := models.New(1)
-	entertainment2 := models.New(2)
-	entertainment3 := models.New(3)
-	entertainment4 := models.New(4)
-	entertainment5 := models.New(5)
+	entertainment1 := models.New(1, "title", "description")
+	entertainment2 := models.New(2, "title", "description")
+	entertainment3 := models.New(3, "title", "description")
+	entertainment4 := models.New(4, "title", "description")
+	entertainment5 := models.New(5, "title", "description")
 
 	slice := []models.Entertainment{
 		entertainment1,

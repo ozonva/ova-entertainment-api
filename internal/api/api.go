@@ -1,11 +1,15 @@
 package api
 
-import desc "github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api/github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api"
+import (
+	"github.com/ozonva/ova-entertainment-api/internal/repo"
+	desc "github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api/github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api"
+)
 
-type Server struct {
+type ApiServer struct {
 	desc.UnimplementedApiServer
+	repo repo.Repo
 }
 
-func NewApiServer() desc.ApiServer {
-	return &Server{}
+func NewApiServer(r repo.Repo) desc.ApiServer {
+	return &ApiServer{repo: r}
 }

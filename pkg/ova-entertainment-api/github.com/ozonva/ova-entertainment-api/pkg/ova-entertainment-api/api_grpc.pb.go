@@ -4,6 +4,7 @@ package ova_entertainment_api
 
 import (
 	context "context"
+	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -18,10 +19,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ApiClient interface {
-	CreateEntertainmentV1(ctx context.Context, in *CreateEntertainmentV1Request, opts ...grpc.CallOption) (*EntertainmentV1Response, error)
+	CreateEntertainmentV1(ctx context.Context, in *CreateEntertainmentV1Request, opts ...grpc.CallOption) (*empty.Empty, error)
 	DescribeEntertainmentV1(ctx context.Context, in *DescribeEntertainmentV1Request, opts ...grpc.CallOption) (*EntertainmentV1Response, error)
 	ListEntertainmentsV1(ctx context.Context, in *ListEntertainmentV1Request, opts ...grpc.CallOption) (*ListEntertainmentsV1Response, error)
-	RemoveEntertainmentV1(ctx context.Context, in *RemoveEntertainmentV1Request, opts ...grpc.CallOption) (*RemoveV1Response, error)
+	RemoveEntertainmentV1(ctx context.Context, in *RemoveEntertainmentV1Request, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type apiClient struct {
@@ -32,8 +33,8 @@ func NewApiClient(cc grpc.ClientConnInterface) ApiClient {
 	return &apiClient{cc}
 }
 
-func (c *apiClient) CreateEntertainmentV1(ctx context.Context, in *CreateEntertainmentV1Request, opts ...grpc.CallOption) (*EntertainmentV1Response, error) {
-	out := new(EntertainmentV1Response)
+func (c *apiClient) CreateEntertainmentV1(ctx context.Context, in *CreateEntertainmentV1Request, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
 	err := c.cc.Invoke(ctx, "/ova.entertainment.api.api/CreateEntertainmentV1", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -59,8 +60,8 @@ func (c *apiClient) ListEntertainmentsV1(ctx context.Context, in *ListEntertainm
 	return out, nil
 }
 
-func (c *apiClient) RemoveEntertainmentV1(ctx context.Context, in *RemoveEntertainmentV1Request, opts ...grpc.CallOption) (*RemoveV1Response, error) {
-	out := new(RemoveV1Response)
+func (c *apiClient) RemoveEntertainmentV1(ctx context.Context, in *RemoveEntertainmentV1Request, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
 	err := c.cc.Invoke(ctx, "/ova.entertainment.api.api/RemoveEntertainmentV1", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -72,10 +73,10 @@ func (c *apiClient) RemoveEntertainmentV1(ctx context.Context, in *RemoveEnterta
 // All implementations must embed UnimplementedApiServer
 // for forward compatibility
 type ApiServer interface {
-	CreateEntertainmentV1(context.Context, *CreateEntertainmentV1Request) (*EntertainmentV1Response, error)
+	CreateEntertainmentV1(context.Context, *CreateEntertainmentV1Request) (*empty.Empty, error)
 	DescribeEntertainmentV1(context.Context, *DescribeEntertainmentV1Request) (*EntertainmentV1Response, error)
 	ListEntertainmentsV1(context.Context, *ListEntertainmentV1Request) (*ListEntertainmentsV1Response, error)
-	RemoveEntertainmentV1(context.Context, *RemoveEntertainmentV1Request) (*RemoveV1Response, error)
+	RemoveEntertainmentV1(context.Context, *RemoveEntertainmentV1Request) (*empty.Empty, error)
 	mustEmbedUnimplementedApiServer()
 }
 
@@ -83,7 +84,7 @@ type ApiServer interface {
 type UnimplementedApiServer struct {
 }
 
-func (UnimplementedApiServer) CreateEntertainmentV1(context.Context, *CreateEntertainmentV1Request) (*EntertainmentV1Response, error) {
+func (UnimplementedApiServer) CreateEntertainmentV1(context.Context, *CreateEntertainmentV1Request) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateEntertainmentV1 not implemented")
 }
 func (UnimplementedApiServer) DescribeEntertainmentV1(context.Context, *DescribeEntertainmentV1Request) (*EntertainmentV1Response, error) {
@@ -92,7 +93,7 @@ func (UnimplementedApiServer) DescribeEntertainmentV1(context.Context, *Describe
 func (UnimplementedApiServer) ListEntertainmentsV1(context.Context, *ListEntertainmentV1Request) (*ListEntertainmentsV1Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListEntertainmentsV1 not implemented")
 }
-func (UnimplementedApiServer) RemoveEntertainmentV1(context.Context, *RemoveEntertainmentV1Request) (*RemoveV1Response, error) {
+func (UnimplementedApiServer) RemoveEntertainmentV1(context.Context, *RemoveEntertainmentV1Request) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveEntertainmentV1 not implemented")
 }
 func (UnimplementedApiServer) mustEmbedUnimplementedApiServer() {}

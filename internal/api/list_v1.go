@@ -6,11 +6,25 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (s *Server) ListEntertainmentsV1(ctx context.Context, req *desc.ListEntertainmentV1Request) (*desc.ListEntertainmentsV1Response, error) {
+func (s *ApiServer) ListEntertainmentsV1(ctx context.Context, req *desc.ListEntertainmentV1Request) (*desc.ListEntertainmentsV1Response, error) {
 
-	log.Info().Msg("Run ListEntertainmentsV1")
+	log.Info().
+		Caller().
+		Uint32("Limit", req.Limit).
+		Uint32("Offset", req.Offset).
+		Msg("")
 
-	return &desc.ListEntertainmentsV1Response{
-		List: []*desc.EntertainmentV1Response{},
-	}, nil
+	models, err := s.repo.ListEntertainments(req.Limit, req.Offset)
+	if err != nil {
+		log.Error().Caller().Err(err).Msg("")
+		return nil, err
+	}
+
+	list := make([]*desc.EntertainmentV1Response, 0, req.Limit)
+
+	for _, e := range models {
+		list = append(list, e.Marshall())
+	}
+
+	return &desc.ListEntertainmentsV1Response{List: list}, nil
 }

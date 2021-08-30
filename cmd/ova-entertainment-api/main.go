@@ -1,53 +1,31 @@
 package main
 
 import (
-	"encoding/csv"
 	"fmt"
+	"github.com/jmoiron/sqlx"
+	"github.com/joho/godotenv"
 	"github.com/ozonva/ova-entertainment-api/internal/api"
+	"github.com/ozonva/ova-entertainment-api/internal/db"
+	"github.com/ozonva/ova-entertainment-api/internal/repo"
+	desc "github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api/github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api"
 	"google.golang.org/grpc"
 	"log"
 	"net"
 	"os"
-
-	desc "github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api/github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api"
 )
 
 const (
 	grpcPort = ":8082"
 )
 
-func ReadCsvFile(fileName string) {
-	file, err := os.Open(fileName)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	defer func() {
-		err := file.Close()
-		if err != nil {
-			fmt.Println(err)
-		}
-	}()
-
-	reader := csv.NewReader(file)
-	for {
-		value, err := reader.Read()
-		if err != nil {
-			break
-		}
-		fmt.Println(value)
-	}
-}
-
-func run() error {
+func run(dbConn *sqlx.DB) error {
 	listen, err := net.Listen("tcp", grpcPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
 	s := grpc.NewServer()
-	desc.RegisterApiServer(s, api.NewApiServer())
+	desc.RegisterApiServer(s, api.NewApiServer(repo.NewRepo(dbConn)))
 
 	if err := s.Serve(listen); err != nil {
 		log.Fatalf("failed to serve: %v", err)
@@ -57,7 +35,20 @@ func run() error {
 }
 
 func main() {
-	if err := run(); err != nil {
+
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("failed open env: %v", err)
+	}
+
+	dsn := fmt.Sprintf(
+		"postgres://%s:%s@localhost:5434/%s?sslmode=disable",
+		os.Getenv("POSTGRES_USER"),
+		os.Getenv("POSTGRES_PASSWORD"),
+		os.Getenv("POSTGRES_DB"),
+	)
+	dbConn := db.Connect(dsn)
+
+	if err := run(dbConn); err != nil {
 		log.Fatal(err)
 	}
 }

@@ -3,52 +3,40 @@ package models
 import (
 	"fmt"
 	"time"
+
+	desc "github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api/github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api"
 )
 
 type Entertainment struct {
-	userID      uint64
-	title       string
-	description string
-	date        time.Time
+	ID          uint64 `db:"id"`
+	UserID      uint64 `db:"user_id"`
+	Title       string
+	Description string
+	Date        time.Time
 }
 
-func New(UserID uint64) Entertainment {
+func New(UserID uint64, title string, description string) Entertainment {
 	entity := Entertainment{
-		userID: UserID,
-		date:   time.Now().Truncate(24*time.Hour).AddDate(0, 0, 7),
+		UserID:      UserID,
+		Title:       title,
+		Description: description,
+		Date:        time.Now().Truncate(24*time.Hour).AddDate(0, 0, 7),
 	}
 
 	return entity
 }
 
-func (e Entertainment) GetUserID() uint64 {
-	return e.userID
-}
-
 func (e *Entertainment) String() string {
-	return fmt.Sprintf("Entertainment name: %s, description: %s", e.title, e.description)
+	return fmt.Sprintf("Entertainment name: %s, Description: %s", e.Title, e.Description)
 }
 
-func (e *Entertainment) SetTitle(title string) {
-	e.title = title
-}
-
-func (e Entertainment) GetTitle() string {
-	return e.title
-}
-
-func (e *Entertainment) SetDate(date time.Time) {
-	e.date = date
-}
-
-func (e Entertainment) GetDate() time.Time {
-	return e.date
-}
-
-func (e *Entertainment) SetDescription(description string) {
-	e.description = description
-}
-
-func (e Entertainment) GetDescription() string {
-	return e.description
+// @todo должно быть какбудто не тут
+func (e *Entertainment) Marshall() *desc.EntertainmentV1Response {
+	return &desc.EntertainmentV1Response{
+		ID:          e.ID,
+		UserID:      e.UserID,
+		Title:       e.Title,
+		Description: e.Description,
+		Date:        e.Date.String(),
+	}
 }

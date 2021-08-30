@@ -1,13 +1,14 @@
 package flusher
 
 import (
+	"errors"
 	"github.com/ozonva/ova-entertainment-api/internal/models"
 	"github.com/ozonva/ova-entertainment-api/internal/repo"
 	"github.com/ozonva/ova-entertainment-api/internal/utils"
 )
 
 type Flusher interface {
-	Flush(entities []models.Entertainment) []models.Entertainment
+	Flush(entities []models.Entertainment) error
 }
 
 func NewFlusher(chunkSize int, entityRepo repo.Repo) Flusher {
@@ -22,14 +23,14 @@ type flusher struct {
 	entityRepo repo.Repo
 }
 
-func (f *flusher) Flush(entities []models.Entertainment) []models.Entertainment {
+func (f *flusher) Flush(entities []models.Entertainment) error {
 	chunks := utils.SplitToBulks(entities, uint(f.chunkSize))
 
 	notSavedModels := make([]models.Entertainment, 0, len(entities))
 	for _, chunk := range chunks {
-		err := f.entityRepo.AddEntities(chunk)
+		err := f.entityRepo.AddEntertainments(chunk)
 		if err != nil {
-			notSavedModels = append(notSavedModels, chunk...)
+			return err
 		}
 	}
 
@@ -37,5 +38,5 @@ func (f *flusher) Flush(entities []models.Entertainment) []models.Entertainment 
 		return nil
 	}
 
-	return notSavedModels
+	return errors.New("Not all saved")
 }
