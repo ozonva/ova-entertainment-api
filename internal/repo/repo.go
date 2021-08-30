@@ -22,7 +22,7 @@ type repo struct {
 func NewRepo(db *sqlx.DB) Repo {
 	return &repo{
 		db:      db,
-		builder: squirrel.StatementBuilder.RunWith(db).PlaceholderFormat(squirrel.Dollar),
+		builder: squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar),
 	}
 }
 
@@ -36,7 +36,12 @@ func (r *repo) AddEntertainments(models []models.Entertainment) error {
 		builder = builder.Values(model.UserID, model.Title, model.Description)
 	}
 
-	_, err := builder.Exec()
+	query, args, err := builder.ToSql()
+	if err != nil {
+		return err
+	}
+
+	_, err = r.db.Exec(query, args...)
 
 	return err
 }
@@ -53,6 +58,7 @@ func (r *repo) ListEntertainments(limit uint32, offset uint32) ([]models.Enterta
 		Limit(uint64(limit)).
 		Offset(uint64(offset)).
 		ToSql()
+
 	if err != nil {
 		return nil, err
 	}
@@ -77,13 +83,18 @@ func (r *repo) ListEntertainments(limit uint32, offset uint32) ([]models.Enterta
 }
 
 func (r *repo) DescribeEntertainment(model models.Entertainment) (*models.Entertainment, error) {
-	builder := r.builder.
+	query, args, err := r.builder.
 		Update("entertainments").
 		Set("title", model.Title).
 		Set("description", model.Description).
-		Where(squirrel.Eq{"id": model.ID})
+		Where(squirrel.Eq{"id": model.ID}).
+		ToSql()
 
-	result, err := builder.Exec()
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := r.db.Exec(query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -97,11 +108,16 @@ func (r *repo) DescribeEntertainment(model models.Entertainment) (*models.Entert
 }
 
 func (r *repo) RemoveEntertainment(ID uint64) error {
-	builder := r.builder.
+	query, args, err := r.builder.
 		Delete("entertainments").
-		Where(squirrel.Eq{"id": ID})
+		Where(squirrel.Eq{"id": ID}).
+		ToSql()
 
-	_, err := builder.Exec()
+	if err != nil {
+		return err
+	}
+
+	_, err = r.db.Exec(query, args...)
 
 	return err
 }
