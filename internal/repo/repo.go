@@ -15,8 +15,7 @@ type Repo interface {
 }
 
 type repo struct {
-	db      *sqlx.DB
-	builder squirrel.StatementBuilderType
+	db *sqlx.DB
 }
 
 func NewRepo(db *sqlx.DB) Repo {
