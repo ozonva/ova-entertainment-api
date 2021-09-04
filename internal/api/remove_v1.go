@@ -24,8 +24,8 @@ func (s *ApiServer) RemoveEntertainmentV1(ctx context.Context, req *desc.RemoveE
 	}
 
 	err = s.producer.Send(kafka.Message{
-		MessageType: kafka.Remove,
-		Value:       req.ID,
+		EventType: kafka.Remove,
+		Value:     req.ID,
 	})
 	if err != nil {
 		return nil, err

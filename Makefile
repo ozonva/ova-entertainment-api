@@ -50,10 +50,3 @@ create-badge:
 	rm cover.out.tmp
 	rm coverage.out
 	#gopherbadger -md="README.md" -manualcov=
-
-
-.PHONY: dev-up
-dev-up:
-	sudo chmod -R 777 .docker/
-	docker-compose build ova-entertainment-api
-	docker-compose up

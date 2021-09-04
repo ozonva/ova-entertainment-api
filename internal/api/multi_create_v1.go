@@ -36,8 +36,8 @@ func (s *ApiServer) MultiCreateEntertainmentV1(ctx context.Context, req *desc.Mu
 		}
 
 		err = s.producer.Send(kafka.Message{
-			MessageType: kafka.MultiCreate,
-			Value:       slice,
+			EventType: kafka.MultiCreate,
+			Value:     slice,
 		})
 		if err != nil {
 			return nil, err

@@ -26,8 +26,8 @@ const (
 )
 
 type Message struct {
-	MessageType EventType
-	Value       interface{}
+	EventType EventType
+	Value     interface{}
 }
 
 func New(brokerList []string) (Producer, error) {

@@ -34,8 +34,8 @@ func (s *ApiServer) CreateEntertainmentV1(ctx context.Context, req *desc.CreateE
 	}
 
 	err = s.producer.Send(kafka.Message{
-		MessageType: kafka.Create,
-		Value:       model,
+		EventType: kafka.Create,
+		Value:     model,
 	})
 	if err != nil {
 		return nil, err

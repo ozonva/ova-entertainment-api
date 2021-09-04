@@ -11,7 +11,7 @@ import (
 
 func (s *ApiServer) UpdateEntertainmentV1(ctx context.Context, req *desc.UpdateEntertainmentV1Request) (*desc.EntertainmentV1Response, error) {
 
-	defer s.metrics.DescribeSuccessResponseIncCounter()
+	defer s.metrics.UpdateSuccessResponseIncCounter()
 
 	log.Info().
 		Caller().
@@ -34,8 +34,8 @@ func (s *ApiServer) UpdateEntertainmentV1(ctx context.Context, req *desc.UpdateE
 	}
 
 	err = s.producer.Send(kafka.Message{
-		MessageType: kafka.Update,
-		Value:       entertainment,
+		EventType: kafka.Update,
+		Value:     entertainment.ID,
 	})
 	if err != nil {
 		return nil, err

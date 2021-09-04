@@ -7,7 +7,7 @@ import (
 type Metrics interface {
 	CreateSuccessResponseIncCounter()
 	MultiCreateSuccessResponseIncCounter()
-	DescribeSuccessResponseIncCounter()
+	UpdateSuccessResponseIncCounter()
 	ListSuccessResponseIncCounter()
 	RemoveSuccessResponseIncCounter()
 }
@@ -15,7 +15,7 @@ type Metrics interface {
 type metrics struct {
 	createCounter      prometheus.Counter
 	multiCreateCounter prometheus.Counter
-	describeCounter    prometheus.Counter
+	updateCounter      prometheus.Counter
 	listCounter        prometheus.Counter
 	removeCounter      prometheus.Counter
 }
@@ -28,8 +28,8 @@ func (m *metrics) MultiCreateSuccessResponseIncCounter() {
 	m.multiCreateCounter.Inc()
 }
 
-func (m *metrics) DescribeSuccessResponseIncCounter() {
-	m.describeCounter.Inc()
+func (m *metrics) UpdateSuccessResponseIncCounter() {
+	m.updateCounter.Inc()
 }
 
 func (m *metrics) ListSuccessResponseIncCounter() {
@@ -46,7 +46,7 @@ func NewMetrics() Metrics {
 			Name: "grpc_success_create_response",
 			Help: "Api Create success response",
 		}),
-		describeCounter: prometheus.NewCounter(prometheus.CounterOpts{
+		updateCounter: prometheus.NewCounter(prometheus.CounterOpts{
 			Name: "grpc_success_describe_response",
 			Help: "Api Describe success response",
 		}),
@@ -63,9 +63,9 @@ func NewMetrics() Metrics {
 			Help: "Api Remove success response",
 		}),
 	}
-	// @todo что то не так
+
 	prometheus.MustRegister(m.createCounter)
-	prometheus.MustRegister(m.describeCounter)
+	prometheus.MustRegister(m.updateCounter)
 	prometheus.MustRegister(m.listCounter)
 	prometheus.MustRegister(m.removeCounter)
 	prometheus.MustRegister(m.multiCreateCounter)
