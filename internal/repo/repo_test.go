@@ -63,7 +63,7 @@ var _ = Describe("Repo", func() {
 		})
 	})
 
-	Context("DescribeEntertainment", func() {
+	Context("UpdateEntertainment", func() {
 		It("should not error", func() {
 
 			model := models.New(1, "Title", "Description")
@@ -74,7 +74,7 @@ var _ = Describe("Repo", func() {
 				WillReturnResult(result)
 
 			r := NewRepo(db)
-			_, err = r.DescribeEntertainment(model)
+			_, err = r.UpdateEntertainment(model)
 
 			assert.Nil(GinkgoT(), err)
 		})

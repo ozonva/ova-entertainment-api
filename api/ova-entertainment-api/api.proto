@@ -8,7 +8,8 @@ option go_package = "github.com/ozonva/ova-entertainment-api/pkg/ova-entertainme
 
 service api {
     rpc CreateEntertainmentV1(CreateEntertainmentV1Request) returns (google.protobuf.Empty) {}
-    rpc DescribeEntertainmentV1(DescribeEntertainmentV1Request) returns (EntertainmentV1Response) {}
+    rpc MultiCreateEntertainmentV1(MultiCreateEntertainmentV1Request) returns (google.protobuf.Empty) {}
+    rpc UpdateEntertainmentV1(UpdateEntertainmentV1Request) returns (EntertainmentV1Response) {}
     rpc ListEntertainmentsV1(ListEntertainmentV1Request) returns (ListEntertainmentsV1Response) {}
     rpc RemoveEntertainmentV1(RemoveEntertainmentV1Request) returns (google.protobuf.Empty) {}
 }
@@ -19,7 +20,11 @@ message CreateEntertainmentV1Request {
     string description = 3;
 }
 
-message DescribeEntertainmentV1Request {
+message MultiCreateEntertainmentV1Request {
+    repeated CreateEntertainmentV1Request models = 1;
+}
+
+message UpdateEntertainmentV1Request {
     uint64 ID = 1;
     uint64 userID = 2;
     string title = 3;

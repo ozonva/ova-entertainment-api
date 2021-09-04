@@ -20,7 +20,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ApiClient interface {
 	CreateEntertainmentV1(ctx context.Context, in *CreateEntertainmentV1Request, opts ...grpc.CallOption) (*empty.Empty, error)
-	DescribeEntertainmentV1(ctx context.Context, in *DescribeEntertainmentV1Request, opts ...grpc.CallOption) (*EntertainmentV1Response, error)
+	MultiCreateEntertainmentV1(ctx context.Context, in *MultiCreateEntertainmentV1Request, opts ...grpc.CallOption) (*empty.Empty, error)
+	UpdateEntertainmentV1(ctx context.Context, in *UpdateEntertainmentV1Request, opts ...grpc.CallOption) (*EntertainmentV1Response, error)
 	ListEntertainmentsV1(ctx context.Context, in *ListEntertainmentV1Request, opts ...grpc.CallOption) (*ListEntertainmentsV1Response, error)
 	RemoveEntertainmentV1(ctx context.Context, in *RemoveEntertainmentV1Request, opts ...grpc.CallOption) (*empty.Empty, error)
 }
@@ -42,9 +43,18 @@ func (c *apiClient) CreateEntertainmentV1(ctx context.Context, in *CreateEnterta
 	return out, nil
 }
 
-func (c *apiClient) DescribeEntertainmentV1(ctx context.Context, in *DescribeEntertainmentV1Request, opts ...grpc.CallOption) (*EntertainmentV1Response, error) {
+func (c *apiClient) MultiCreateEntertainmentV1(ctx context.Context, in *MultiCreateEntertainmentV1Request, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/ova.entertainment.api.api/MultiCreateEntertainmentV1", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *apiClient) UpdateEntertainmentV1(ctx context.Context, in *UpdateEntertainmentV1Request, opts ...grpc.CallOption) (*EntertainmentV1Response, error) {
 	out := new(EntertainmentV1Response)
-	err := c.cc.Invoke(ctx, "/ova.entertainment.api.api/DescribeEntertainmentV1", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ova.entertainment.api.api/UpdateEntertainmentV1", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +84,8 @@ func (c *apiClient) RemoveEntertainmentV1(ctx context.Context, in *RemoveEnterta
 // for forward compatibility
 type ApiServer interface {
 	CreateEntertainmentV1(context.Context, *CreateEntertainmentV1Request) (*empty.Empty, error)
-	DescribeEntertainmentV1(context.Context, *DescribeEntertainmentV1Request) (*EntertainmentV1Response, error)
+	MultiCreateEntertainmentV1(context.Context, *MultiCreateEntertainmentV1Request) (*empty.Empty, error)
+	UpdateEntertainmentV1(context.Context, *UpdateEntertainmentV1Request) (*EntertainmentV1Response, error)
 	ListEntertainmentsV1(context.Context, *ListEntertainmentV1Request) (*ListEntertainmentsV1Response, error)
 	RemoveEntertainmentV1(context.Context, *RemoveEntertainmentV1Request) (*empty.Empty, error)
 	mustEmbedUnimplementedApiServer()
@@ -87,8 +98,11 @@ type UnimplementedApiServer struct {
 func (UnimplementedApiServer) CreateEntertainmentV1(context.Context, *CreateEntertainmentV1Request) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateEntertainmentV1 not implemented")
 }
-func (UnimplementedApiServer) DescribeEntertainmentV1(context.Context, *DescribeEntertainmentV1Request) (*EntertainmentV1Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DescribeEntertainmentV1 not implemented")
+func (UnimplementedApiServer) MultiCreateEntertainmentV1(context.Context, *MultiCreateEntertainmentV1Request) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MultiCreateEntertainmentV1 not implemented")
+}
+func (UnimplementedApiServer) UpdateEntertainmentV1(context.Context, *UpdateEntertainmentV1Request) (*EntertainmentV1Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateEntertainmentV1 not implemented")
 }
 func (UnimplementedApiServer) ListEntertainmentsV1(context.Context, *ListEntertainmentV1Request) (*ListEntertainmentsV1Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListEntertainmentsV1 not implemented")
@@ -127,20 +141,38 @@ func _Api_CreateEntertainmentV1_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Api_DescribeEntertainmentV1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DescribeEntertainmentV1Request)
+func _Api_MultiCreateEntertainmentV1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MultiCreateEntertainmentV1Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ApiServer).DescribeEntertainmentV1(ctx, in)
+		return srv.(ApiServer).MultiCreateEntertainmentV1(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ova.entertainment.api.api/DescribeEntertainmentV1",
+		FullMethod: "/ova.entertainment.api.api/MultiCreateEntertainmentV1",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ApiServer).DescribeEntertainmentV1(ctx, req.(*DescribeEntertainmentV1Request))
+		return srv.(ApiServer).MultiCreateEntertainmentV1(ctx, req.(*MultiCreateEntertainmentV1Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Api_UpdateEntertainmentV1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateEntertainmentV1Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApiServer).UpdateEntertainmentV1(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ova.entertainment.api.api/UpdateEntertainmentV1",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApiServer).UpdateEntertainmentV1(ctx, req.(*UpdateEntertainmentV1Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -193,8 +225,12 @@ var Api_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Api_CreateEntertainmentV1_Handler,
 		},
 		{
-			MethodName: "DescribeEntertainmentV1",
-			Handler:    _Api_DescribeEntertainmentV1_Handler,
+			MethodName: "MultiCreateEntertainmentV1",
+			Handler:    _Api_MultiCreateEntertainmentV1_Handler,
+		},
+		{
+			MethodName: "UpdateEntertainmentV1",
+			Handler:    _Api_UpdateEntertainmentV1_Handler,
 		},
 		{
 			MethodName: "ListEntertainmentsV1",

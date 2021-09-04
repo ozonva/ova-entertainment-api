@@ -26,3 +26,95 @@ services:
     restart: always
     ports:
       - 5000:8080
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:8.0.3
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+
+  prometheus:
+    container_name: prometheus
+    restart: always
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:Z
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=20d'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - '9090:9090'
+
+  ova-entertainment-api:
+    container_name: ova-entertainment-api
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - db
+      - jaeger
+      - kafka
+    links:
+      - kafka
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+      - "8082:8082"
+      - "9100:9100"
+
+  zookeeper:
+    container_name: zookeeper
+    restart: always
+    image: zookeeper:3.4.9
+    hostname: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_PORT: 2181
+      ZOO_SERVERS: server.1=zookeeper:2888:3888
+    volumes:
+      - ./.docker/zookeeper/data:/data
+      - ./.docker/zookeeper/datalog:/datalog
+
+  kafka:
+    container_name: kafka
+    restart: always
+    image: confluentinc/cp-kafka:5.3.0
+    hostname: kafka1
+    ports:
+      - "9091:9091"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka:19091,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-host.docker.internal}:9091
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - ./.docker/kafka/data:/var/lib/kafka/data
+    depends_on:
+      - zookeeper
+
+  kafdrop:
+    container_name: kafdrop
+    restart: always
+    image: obsidiandynamics/kafdrop
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:19091"
+    depends_on:
+      - kafka
+
+  jaeger:
+    container_name: jaeger
+    image: 'jaegertracing/all-in-one:latest'
+    ports:
+      - '6831:6831/udp'
+      - '16686:16686'

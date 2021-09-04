@@ -3,6 +3,10 @@ include .env
 LOCAL_BIN:=$(CURDIR)/bin
 DBSTRING:="postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5434/$(POSTGRES_DB)?sslmode=disable"
 
+.PHONY: build
+build: deps
+	GOBIN=$(LOCAL_BIN) go build -o $(LOCAL_BIN)/ova-entertainment-api cmd/ova-entertainment-api/main.go
+
 .PHONY: deps
 deps: .install-go-deps
 
@@ -48,3 +52,8 @@ create-badge:
 	#gopherbadger -md="README.md" -manualcov=
 
 
+.PHONY: dev-up
+dev-up:
+	sudo chmod -R 777 .docker/
+	docker-compose build ova-entertainment-api
+	docker-compose up

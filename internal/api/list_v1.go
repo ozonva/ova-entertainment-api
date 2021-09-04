@@ -8,6 +8,8 @@ import (
 
 func (s *ApiServer) ListEntertainmentsV1(ctx context.Context, req *desc.ListEntertainmentV1Request) (*desc.ListEntertainmentsV1Response, error) {
 
+	defer s.metrics.ListSuccessResponseIncCounter()
+
 	log.Info().
 		Caller().
 		Uint32("Limit", req.Limit).
