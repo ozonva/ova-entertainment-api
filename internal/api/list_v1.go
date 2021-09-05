@@ -6,9 +6,13 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (s *ApiServer) ListEntertainmentsV1(ctx context.Context, req *desc.ListEntertainmentV1Request) (*desc.ListEntertainmentsV1Response, error) {
+func (s *ApiServer) ListEntertainmentsV1(ctx context.Context, req *desc.ListEntertainmentV1Request) (res *desc.ListEntertainmentsV1Response, err error) {
 
-	defer s.metrics.ListSuccessResponseIncCounter()
+	defer func() {
+		if err == nil {
+			s.metrics.ListSuccessResponseIncCounter()
+		}
+	}()
 
 	log.Info().
 		Caller().

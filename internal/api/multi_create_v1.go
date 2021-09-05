@@ -12,9 +12,13 @@ import (
 
 const bulksSize = uint(3)
 
-func (s *ApiServer) MultiCreateEntertainmentV1(ctx context.Context, req *desc.MultiCreateEntertainmentV1Request) (*emptypb.Empty, error) {
+func (s *ApiServer) MultiCreateEntertainmentV1(ctx context.Context, req *desc.MultiCreateEntertainmentV1Request) (res *emptypb.Empty, err error) {
 
-	defer s.metrics.MultiCreateSuccessResponseIncCounter()
+	defer func() {
+		if err == nil {
+			s.metrics.MultiCreateSuccessResponseIncCounter()
+		}
+	}()
 
 	entertainments := make([]models.Entertainment, 0, len(req.Models))
 	for _, model := range req.Models {
@@ -30,7 +34,7 @@ func (s *ApiServer) MultiCreateEntertainmentV1(ctx context.Context, req *desc.Mu
 
 	bulks := utils.SplitToBulks(entertainments, bulksSize)
 	for _, slice := range bulks {
-		err := s.repo.AddEntertainments(slice)
+		err = s.repo.AddEntertainments(slice)
 		if err != nil {
 			return nil, err
 		}
