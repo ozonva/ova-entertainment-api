@@ -8,6 +8,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+// RemoveEntertainmentV1 Удаление сущности
 func (s *ApiServer) RemoveEntertainmentV1(ctx context.Context, req *desc.RemoveEntertainmentV1Request) (*emptypb.Empty, error) {
 
 	defer s.metrics.RemoveSuccessResponseIncCounter()

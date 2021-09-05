@@ -11,6 +11,8 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+// CreateEntertainmentV1 Добавление сущности в базу и в очередь сообщений
+// При успешном добавлении отправляется метрика
 func (s *ApiServer) CreateEntertainmentV1(ctx context.Context, req *desc.CreateEntertainmentV1Request) (*emptypb.Empty, error) {
 
 	defer s.metrics.CreateSuccessResponseIncCounter()

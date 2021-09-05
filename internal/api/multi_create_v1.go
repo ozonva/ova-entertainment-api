@@ -10,8 +10,13 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+// bulksSize на сколько батчей делить исходный спискок
 const bulksSize = uint(3)
 
+// MultiCreateEntertainmentV1 Множественное создание сущностей
+// Сущности добавляются в базу батчами по bulksSize
+// Батчи добавляются в трейсинг
+// Успешный результат отправляется в метрику
 func (s *ApiServer) MultiCreateEntertainmentV1(ctx context.Context, req *desc.MultiCreateEntertainmentV1Request) (*emptypb.Empty, error) {
 
 	defer s.metrics.MultiCreateSuccessResponseIncCounter()

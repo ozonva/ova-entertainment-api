@@ -1,3 +1,4 @@
+// Имплементация методов апи для grpc
 package api
 
 import (
@@ -7,6 +8,7 @@ import (
 	desc "github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api/github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api"
 )
 
+// ApiServer Структура API
 type ApiServer struct {
 	desc.UnimplementedApiServer
 	repo     repo.Repo

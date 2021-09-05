@@ -2,6 +2,7 @@ package config
 
 import "github.com/spf13/viper"
 
+// EnvConfig структура описывающая .env файл
 type EnvConfig struct {
 	DBPassword string `mapstructure:"POSTGRES_PASSWORD"`
 	DBUser     string `mapstructure:"POSTGRES_USER"`

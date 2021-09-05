@@ -1,23 +1,21 @@
 package db
 
 import (
-	"github.com/jmoiron/sqlx"
-	"log"
-
 	_ "github.com/jackc/pgx/v4"
 	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/jmoiron/sqlx"
 )
 
-func Connect(DSN string) *sqlx.DB {
+func Connect(DSN string) (*sqlx.DB, error) {
 	db, err := sqlx.Open("pgx", DSN)
 	if err != nil {
-		log.Fatalf("connect do db error %v", err)
+		return nil, err
 	}
 
 	err = db.Ping()
 	if err != nil {
-		log.Fatalf("failed to connect to db: %v", err)
+		return nil, err
 	}
 
-	return db
+	return db, nil
 }

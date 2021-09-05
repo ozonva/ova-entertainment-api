@@ -7,6 +7,7 @@ import (
 	"github.com/ozonva/ova-entertainment-api/internal/utils"
 )
 
+// Flusher Сохранение моделей батчами
 type Flusher interface {
 	Flush(entities []models.Entertainment) error
 }

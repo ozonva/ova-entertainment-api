@@ -1,3 +1,7 @@
+// Микросервис ova-entertainment-api
+// Для общения используется GRPC
+// CUD операции кладутся в kafka
+// Метрики собираются в grafana и трейсинг в jaeger
 package main
 
 import (
@@ -24,10 +28,12 @@ import (
 	"net/http"
 )
 
+// Порт для общения по GRPC
 const (
 	grpcPort = ":8082"
 )
 
+// Инициализация трейсинга
 func initJaeger() (opentracing.Tracer, io.Closer) {
 	cfg := jaegercfg.Configuration{
 		ServiceName: "ova-entertainment-api",
@@ -53,6 +59,7 @@ func initJaeger() (opentracing.Tracer, io.Closer) {
 	return tracer, closer
 }
 
+// Инициализация сборщика метрик
 func initMetrics() {
 	http.Handle("/metrics", promhttp.Handler())
 	err := http.ListenAndServe(":9100", nil)
@@ -61,14 +68,24 @@ func initMetrics() {
 	}
 }
 
+//func initHealthcheck() {
+//	http.Handle("/healthcheck", healthcheck.Handler())
+//	err := http.ListenAndServe(":8080", nil)
+//	if err != nil {
+//		log.Fatalf("failed to serve: %v", err)
+//	}
+//}
+
+// Инициализация очереди сообщений
 func initKafka() kafka.Producer {
-	conf, err := config.LoadEnvConfig(".")
-	if err != nil {
-		log.Fatal("cannot load config:", err)
-	}
+	//conf, err := config.LoadEnvConfig(".")
+	//if err != nil {
+	//	log.Fatal("cannot load config:", err)
+	//}
 
 	brokerList := []string{
-		fmt.Sprintf("%s:%s", conf.KafkaHost, conf.KafkaPort), //"kafka:19091",
+		//fmt.Sprintf("%s:%s", conf.KafkaHost, conf.KafkaPort), //
+		"kafka:19091",
 	}
 	producer, err := kafka.New(brokerList)
 	if err != nil {
@@ -78,6 +95,7 @@ func initKafka() kafka.Producer {
 	return producer
 }
 
+// Инициализация базы данных
 func initDB() *sqlx.DB {
 	conf, err := config.LoadEnvConfig(".")
 	if err != nil {
@@ -93,9 +111,15 @@ func initDB() *sqlx.DB {
 		conf.DBName,
 	)
 
-	return db.Connect(dsn)
+	db, err := db.Connect(dsn)
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+
+	return db
 }
 
+// Запуск GRPC сервера и инициализация сопутствующих сервисов
 func run(dbConn *sqlx.DB) error {
 
 	// init opentracing and jaeger
@@ -105,6 +129,7 @@ func run(dbConn *sqlx.DB) error {
 
 	// init producer kafka
 	producer := initKafka()
+	defer producer.Close()
 
 	// init grpc and api
 	s := grpc.NewServer(grpc.ChainUnaryInterceptor(grpc_prometheus.UnaryServerInterceptor))

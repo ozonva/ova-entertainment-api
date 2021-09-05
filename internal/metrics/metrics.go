@@ -4,6 +4,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+// Metrics интерфейс для отправки метрик
 type Metrics interface {
 	CreateSuccessResponseIncCounter()
 	MultiCreateSuccessResponseIncCounter()
@@ -20,22 +21,27 @@ type metrics struct {
 	removeCounter      prometheus.Counter
 }
 
+// CreateSuccessResponseIncCounter Инкремент метрики об успешном создании
 func (m *metrics) CreateSuccessResponseIncCounter() {
 	m.createCounter.Inc()
 }
 
+// MultiCreateSuccessResponseIncCounter Инкремент метрики об успешном мульти создании
 func (m *metrics) MultiCreateSuccessResponseIncCounter() {
 	m.multiCreateCounter.Inc()
 }
 
+// UpdateSuccessResponseIncCounter Инкремент метрики об успешном обновлении
 func (m *metrics) UpdateSuccessResponseIncCounter() {
 	m.updateCounter.Inc()
 }
 
+// ListSuccessResponseIncCounter Инкремент метрики об успешном получении списка
 func (m *metrics) ListSuccessResponseIncCounter() {
 	m.listCounter.Inc()
 }
 
+// RemoveSuccessResponseIncCounter Инкремент метрики об успешном удалении
 func (m *metrics) RemoveSuccessResponseIncCounter() {
 	m.removeCounter.Inc()
 }
