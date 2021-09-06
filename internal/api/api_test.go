@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
+	"github.com/ozonva/ova-entertainment-api/internal/healthcheck"
 	"github.com/ozonva/ova-entertainment-api/internal/kafka"
 	"github.com/ozonva/ova-entertainment-api/internal/metrics"
 	"github.com/ozonva/ova-entertainment-api/internal/models"
@@ -19,6 +20,7 @@ var _ = Describe("Api", func() {
 		mockRepo     *repo.MockRepo
 		mockProducer *kafka.MockProducer
 		mockMetrics  *metrics.MockMetrics
+		mockHealth   *healthcheck.MockHealthcheck
 		cntx         context.Context
 	)
 
@@ -27,6 +29,7 @@ var _ = Describe("Api", func() {
 		mockRepo = repo.NewMockRepo(mockCtrl)
 		mockProducer = kafka.NewMockProducer(mockCtrl)
 		mockMetrics = metrics.NewMockMetrics(mockCtrl)
+		mockHealth = healthcheck.NewMockHealthcheck(mockCtrl)
 		cntx = context.Background()
 	})
 
@@ -47,7 +50,7 @@ var _ = Describe("Api", func() {
 
 			mockRepo.EXPECT().AddEntertainments(cntx, []models.Entertainment{model}).Return(nil).Times(1)
 
-			api := NewApiServer(mockRepo, mockProducer, mockMetrics)
+			api := NewApiServer(mockRepo, mockProducer, mockMetrics, mockHealth)
 			_, err := api.CreateEntertainmentV1(cntx, &desc.CreateEntertainmentV1Request{
 				UserID:      2,
 				Title:       "Title",
@@ -73,7 +76,7 @@ var _ = Describe("Api", func() {
 			}).Times(1)
 			mockMetrics.EXPECT().IncCounterSuccessResponseForUpdate().Times(1)
 
-			api := NewApiServer(mockRepo, mockProducer, mockMetrics)
+			api := NewApiServer(mockRepo, mockProducer, mockMetrics, mockHealth)
 			_, err := api.UpdateEntertainmentV1(cntx, &desc.UpdateEntertainmentV1Request{
 				ID:          1,
 				UserID:      2,
@@ -97,7 +100,7 @@ var _ = Describe("Api", func() {
 			}).Times(1)
 			mockMetrics.EXPECT().IncCounterSuccessResponseForRemove().Times(1)
 
-			api := NewApiServer(mockRepo, mockProducer, mockMetrics)
+			api := NewApiServer(mockRepo, mockProducer, mockMetrics, mockHealth)
 			_, err := api.RemoveEntertainmentV1(cntx, &desc.RemoveEntertainmentV1Request{ID: 1})
 
 			assert.Nil(GinkgoT(), err)
@@ -115,7 +118,7 @@ var _ = Describe("Api", func() {
 			mockRepo.EXPECT().ListEntertainments(cntx, limit, offset).Return(models, nil).Times(1)
 			mockMetrics.EXPECT().IncCounterSuccessResponseForList().Times(1)
 
-			api := NewApiServer(mockRepo, mockProducer, mockMetrics)
+			api := NewApiServer(mockRepo, mockProducer, mockMetrics, mockHealth)
 			_, err := api.ListEntertainmentsV1(cntx, &desc.ListEntertainmentV1Request{
 				Limit:  uint32(100),
 				Offset: uint32(10),
