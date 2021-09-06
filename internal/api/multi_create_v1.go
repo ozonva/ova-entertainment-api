@@ -39,7 +39,7 @@ func (s *ApiServer) MultiCreateEntertainmentV1(ctx context.Context, req *desc.Mu
 
 	bulks := utils.SplitToBulks(entertainments, bulksSize)
 	for _, slice := range bulks {
-		err = s.repo.AddEntertainments(slice)
+		err = s.repo.AddEntertainments(ctx, slice)
 		if err != nil {
 			return nil, err
 		}

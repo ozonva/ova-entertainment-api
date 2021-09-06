@@ -36,9 +36,8 @@ import (
 )
 
 // Порт для общения по GRPC
-const (
-	grpcPort = ":8082"
-)
+var GrpcPort string
+var conf config.EnvConfig
 
 // Инициализация трейсинга
 func initJaeger() (opentracing.Tracer, io.Closer) {
@@ -77,11 +76,6 @@ func initMetrics() {
 
 // Инициализация очереди сообщений
 func initKafka() kafka.Producer {
-	conf, err := config.LoadEnvConfig(".")
-	if err != nil {
-		log.Fatal("cannot load config:", err)
-	}
-
 	brokerList := []string{
 		fmt.Sprintf("%s:%s", conf.KafkaHost, conf.KafkaPort),
 	}
@@ -95,11 +89,6 @@ func initKafka() kafka.Producer {
 
 // Инициализация базы данных
 func initDB() *sqlx.DB {
-	conf, err := config.LoadEnvConfig(".")
-	if err != nil {
-		log.Fatal("cannot load config:", err)
-	}
-
 	dsn := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		conf.DBUser,
@@ -139,7 +128,7 @@ func run(dbConn *sqlx.DB, sigc chan os.Signal) error {
 	// init prometheus metrics
 	go initMetrics()
 
-	listen, err := net.Listen("tcp", grpcPort)
+	listen, err := net.Listen("tcp", GrpcPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -164,8 +153,14 @@ func run(dbConn *sqlx.DB, sigc chan os.Signal) error {
 
 func main() {
 
+	var err error
+	conf, err = config.LoadEnvConfig(".")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+
 	zerologger.Logger = zerolog.New(os.Stdout).With().Timestamp().Caller().Logger().Output(zerolog.ConsoleWriter{Out: os.Stderr})
-	hook, err := graylog.NewGraylogHook("udp://127.0.0.1:12201")
+	hook, err := graylog.NewGraylogHook(conf.GraylogUrl)
 	if err != nil {
 		log.Fatal(err)
 	}

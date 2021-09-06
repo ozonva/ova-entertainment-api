@@ -5,6 +5,7 @@
 package repo
 
 import (
+	context "context"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -35,59 +36,59 @@ func (m *MockRepo) EXPECT() *MockRepoMockRecorder {
 }
 
 // AddEntertainments mocks base method.
-func (m *MockRepo) AddEntertainments(models []models.Entertainment) error {
+func (m *MockRepo) AddEntertainments(ctx context.Context, models []models.Entertainment) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddEntertainments", models)
+	ret := m.ctrl.Call(m, "AddEntertainments", ctx, models)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // AddEntertainments indicates an expected call of AddEntertainments.
-func (mr *MockRepoMockRecorder) AddEntertainments(models interface{}) *gomock.Call {
+func (mr *MockRepoMockRecorder) AddEntertainments(ctx, models interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddEntertainments", reflect.TypeOf((*MockRepo)(nil).AddEntertainments), models)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddEntertainments", reflect.TypeOf((*MockRepo)(nil).AddEntertainments), ctx, models)
 }
 
 // ListEntertainments mocks base method.
-func (m *MockRepo) ListEntertainments(limit, offset uint32) ([]models.Entertainment, error) {
+func (m *MockRepo) ListEntertainments(ctx context.Context, limit, offset uint32) ([]models.Entertainment, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListEntertainments", limit, offset)
+	ret := m.ctrl.Call(m, "ListEntertainments", ctx, limit, offset)
 	ret0, _ := ret[0].([]models.Entertainment)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListEntertainments indicates an expected call of ListEntertainments.
-func (mr *MockRepoMockRecorder) ListEntertainments(limit, offset interface{}) *gomock.Call {
+func (mr *MockRepoMockRecorder) ListEntertainments(ctx, limit, offset interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEntertainments", reflect.TypeOf((*MockRepo)(nil).ListEntertainments), limit, offset)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEntertainments", reflect.TypeOf((*MockRepo)(nil).ListEntertainments), ctx, limit, offset)
 }
 
 // RemoveEntertainment mocks base method.
-func (m *MockRepo) RemoveEntertainment(ID uint64) error {
+func (m *MockRepo) RemoveEntertainment(ctx context.Context, ID uint64) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RemoveEntertainment", ID)
+	ret := m.ctrl.Call(m, "RemoveEntertainment", ctx, ID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // RemoveEntertainment indicates an expected call of RemoveEntertainment.
-func (mr *MockRepoMockRecorder) RemoveEntertainment(ID interface{}) *gomock.Call {
+func (mr *MockRepoMockRecorder) RemoveEntertainment(ctx, ID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveEntertainment", reflect.TypeOf((*MockRepo)(nil).RemoveEntertainment), ID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveEntertainment", reflect.TypeOf((*MockRepo)(nil).RemoveEntertainment), ctx, ID)
 }
 
 // UpdateEntertainment mocks base method.
-func (m *MockRepo) UpdateEntertainment(model models.Entertainment) (*models.Entertainment, error) {
+func (m *MockRepo) UpdateEntertainment(ctx context.Context, model models.Entertainment) (*models.Entertainment, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateEntertainment", model)
+	ret := m.ctrl.Call(m, "UpdateEntertainment", ctx, model)
 	ret0, _ := ret[0].(*models.Entertainment)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // UpdateEntertainment indicates an expected call of UpdateEntertainment.
-func (mr *MockRepoMockRecorder) UpdateEntertainment(model interface{}) *gomock.Call {
+func (mr *MockRepoMockRecorder) UpdateEntertainment(ctx, model interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEntertainment", reflect.TypeOf((*MockRepo)(nil).UpdateEntertainment), model)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEntertainment", reflect.TypeOf((*MockRepo)(nil).UpdateEntertainment), ctx, model)
 }

@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"context"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	db2 "github.com/ozonva/ova-entertainment-api/internal/db"
@@ -102,17 +103,20 @@ func TestMain(m *testing.M) {
 }
 
 func TestCreate(t *testing.T) {
-	err := r.AddEntertainments([]models.Entertainment{*model1})
+	ctx := context.Background()
+	err := r.AddEntertainments(ctx, []models.Entertainment{*model1})
 	assert.NoError(t, err)
 }
 
 func TestUpdate(t *testing.T) {
+	ctx := context.Background()
 	model2.Title = "Title New"
-	_, err := r.UpdateEntertainment(*model2)
+	_, err := r.UpdateEntertainment(ctx, *model2)
 	assert.NoError(t, err)
 }
 
 func TestDelete(t *testing.T) {
-	err := r.RemoveEntertainment(model1.ID)
+	ctx := context.Background()
+	err := r.RemoveEntertainment(ctx, model1.ID)
 	assert.NoError(t, err)
 }

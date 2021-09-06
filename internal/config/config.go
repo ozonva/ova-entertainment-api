@@ -12,6 +12,8 @@ type EnvConfig struct {
 
 	KafkaPort string `mapstructure:"KAFKA_PORT"`
 	KafkaHost string `mapstructure:"KAFKA_HOST"`
+
+	GraylogUrl string `mapstructure:"GRAYLOG_URL"`
 }
 
 func LoadEnvConfig(path string) (config EnvConfig, err error) {
@@ -20,6 +22,7 @@ func LoadEnvConfig(path string) (config EnvConfig, err error) {
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
+	viper.WatchConfig()
 
 	err = viper.ReadInConfig()
 	if err != nil {

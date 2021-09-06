@@ -26,7 +26,7 @@ func (s *ApiServer) UpdateEntertainmentV1(ctx context.Context, req *desc.UpdateE
 		Str("Description", req.Title).
 		Msg("")
 
-	entertainment, err := s.repo.UpdateEntertainment(models.Entertainment{
+	entertainment, err := s.repo.UpdateEntertainment(ctx, models.Entertainment{
 		ID:          req.ID,
 		UserID:      req.UserID,
 		Title:       req.Title,

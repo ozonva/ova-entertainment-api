@@ -22,7 +22,7 @@ func (s *ApiServer) ListEntertainmentsV1(ctx context.Context, req *desc.ListEnte
 		Uint32("Offset", req.Offset).
 		Msg("")
 
-	models, err := s.repo.ListEntertainments(req.Limit, req.Offset)
+	models, err := s.repo.ListEntertainments(ctx, req.Limit, req.Offset)
 	if err != nil {
 		log.Error().Caller().Err(err).Msg("")
 		return nil, err

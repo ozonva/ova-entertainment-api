@@ -1,6 +1,7 @@
 package saver
 
 import (
+	"context"
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	"github.com/ozonva/ova-entertainment-api/internal/flusher"
@@ -14,6 +15,7 @@ var _ = Describe("Saver", func() {
 		mockCtrl *gomock.Controller
 		mockRepo *repo.MockRepo
 		f        flusher.Flusher
+		cntx     context.Context
 	)
 
 	entities := make([]models.Entertainment, 0, 5)
@@ -22,9 +24,10 @@ var _ = Describe("Saver", func() {
 		entities = dataProviderEntities()
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockRepo = repo.NewMockRepo(mockCtrl)
-		mockRepo.EXPECT().AddEntertainments(entities[0:2]).Return(nil).Times(1)
-		mockRepo.EXPECT().AddEntertainments(entities[2:4]).Return(nil).Times(1)
-		mockRepo.EXPECT().AddEntertainments(entities[4:]).Return(nil).Times(1)
+		cntx = context.Background()
+		mockRepo.EXPECT().AddEntertainments(cntx, entities[0:2]).Return(nil).Times(1)
+		mockRepo.EXPECT().AddEntertainments(cntx, entities[2:4]).Return(nil).Times(1)
+		mockRepo.EXPECT().AddEntertainments(cntx, entities[4:]).Return(nil).Times(1)
 
 		f = flusher.NewFlusher(2, mockRepo)
 	})
@@ -36,7 +39,7 @@ var _ = Describe("Saver", func() {
 	Context("With valid entities slice", func() {
 		It("should all save", func() {
 
-			saver := NewSaver(5, f)
+			saver := NewSaver(cntx, 5, f)
 			for _, v := range entities {
 				err := saver.Save(v)
 
@@ -52,7 +55,7 @@ var _ = Describe("Saver", func() {
 
 			entities = append(entities, models.New(6, "title", "description"))
 
-			saver := NewSaver(5, f)
+			saver := NewSaver(cntx, 5, f)
 			for index, v := range entities {
 				err := saver.Save(v)
 

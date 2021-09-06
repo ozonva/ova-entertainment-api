@@ -1,6 +1,7 @@
 package saver
 
 import (
+	"context"
 	"errors"
 	"log"
 	"sync"
@@ -24,13 +25,15 @@ type saver struct {
 	capacity uint
 	flusher  flusher.Flusher
 	models   []models.Entertainment
+	ctx      context.Context
 }
 
-func NewSaver(capacity uint, flusher flusher.Flusher) Saver {
+func NewSaver(ctx context.Context, capacity uint, flusher flusher.Flusher) Saver {
 	s := &saver{
 		capacity: capacity,
 		flusher:  flusher,
 		models:   make([]models.Entertainment, 0, capacity),
+		ctx:      ctx,
 	}
 
 	s.init()
@@ -85,7 +88,7 @@ func (s *saver) flush() {
 	defer s.Unlock()
 
 	if len(s.models) > 0 {
-		err := s.flusher.Flush(s.models)
+		err := s.flusher.Flush(s.ctx, s.models)
 		if err != nil {
 			log.Fatalf("failed to listen: %v", err)
 		}

@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"context"
 	"errors"
 	"github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
@@ -8,10 +9,10 @@ import (
 )
 
 type Repo interface {
-	AddEntertainments(models []models.Entertainment) error
-	ListEntertainments(limit uint32, offset uint32) ([]models.Entertainment, error)
-	UpdateEntertainment(model models.Entertainment) (*models.Entertainment, error)
-	RemoveEntertainment(ID uint64) error
+	AddEntertainments(ctx context.Context, models []models.Entertainment) error
+	ListEntertainments(ctx context.Context, limit uint32, offset uint32) ([]models.Entertainment, error)
+	UpdateEntertainment(ctx context.Context, model models.Entertainment) (*models.Entertainment, error)
+	RemoveEntertainment(ctx context.Context, ID uint64) error
 }
 
 type repo struct {
@@ -24,7 +25,7 @@ func NewRepo(db *sqlx.DB) Repo {
 	}
 }
 
-func (r *repo) AddEntertainments(models []models.Entertainment) error {
+func (r *repo) AddEntertainments(ctx context.Context, models []models.Entertainment) error {
 
 	builder := squirrel.
 		Insert("entertainments").
@@ -40,12 +41,12 @@ func (r *repo) AddEntertainments(models []models.Entertainment) error {
 		return err
 	}
 
-	_, err = r.db.Exec(query, args...)
+	_, err = r.db.ExecContext(ctx, query, args...)
 
 	return err
 }
 
-func (r *repo) ListEntertainments(limit uint32, offset uint32) ([]models.Entertainment, error) {
+func (r *repo) ListEntertainments(ctx context.Context, limit uint32, offset uint32) ([]models.Entertainment, error) {
 
 	var entertainment models.Entertainment
 	result := make([]models.Entertainment, 0, limit)
@@ -62,7 +63,7 @@ func (r *repo) ListEntertainments(limit uint32, offset uint32) ([]models.Enterta
 		return nil, err
 	}
 
-	rows, err := r.db.Queryx(query, args...)
+	rows, err := r.db.QueryxContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +82,7 @@ func (r *repo) ListEntertainments(limit uint32, offset uint32) ([]models.Enterta
 	return result, nil
 }
 
-func (r *repo) UpdateEntertainment(model models.Entertainment) (*models.Entertainment, error) {
+func (r *repo) UpdateEntertainment(ctx context.Context, model models.Entertainment) (*models.Entertainment, error) {
 	query, args, err := squirrel.
 		Update("entertainments").
 		Set("title", model.Title).
@@ -94,7 +95,7 @@ func (r *repo) UpdateEntertainment(model models.Entertainment) (*models.Entertai
 		return nil, err
 	}
 
-	result, err := r.db.Exec(query, args...)
+	result, err := r.db.ExecContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +108,7 @@ func (r *repo) UpdateEntertainment(model models.Entertainment) (*models.Entertai
 	return &model, nil
 }
 
-func (r *repo) RemoveEntertainment(ID uint64) error {
+func (r *repo) RemoveEntertainment(ctx context.Context, ID uint64) error {
 	query, args, err := squirrel.
 		Delete("entertainments").
 		Where(squirrel.Eq{"id": ID}).
@@ -118,7 +119,7 @@ func (r *repo) RemoveEntertainment(ID uint64) error {
 		return err
 	}
 
-	_, err = r.db.Exec(query, args...)
+	_, err = r.db.ExecContext(ctx, query, args...)
 
 	return err
 }

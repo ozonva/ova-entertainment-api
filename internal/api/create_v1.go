@@ -29,7 +29,7 @@ func (s *ApiServer) CreateEntertainmentV1(ctx context.Context, req *desc.CreateE
 		Msg("")
 
 	f := flusher.NewFlusher(2, s.repo)
-	saver := pgkserver.NewSaver(10, f)
+	saver := pgkserver.NewSaver(ctx, 10, f)
 	defer saver.Close()
 
 	model := models.New(req.UserID, req.Title, req.Description)

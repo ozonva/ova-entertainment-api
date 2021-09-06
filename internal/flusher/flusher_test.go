@@ -1,6 +1,7 @@
 package flusher
 
 import (
+	"context"
 	"errors"
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
@@ -13,6 +14,7 @@ var _ = Describe("Flusher", func() {
 	var (
 		mockCtrl *gomock.Controller
 		mockRepo *repo.MockRepo
+		cntx     context.Context
 	)
 
 	entities := dataProviderEntities()
@@ -20,6 +22,7 @@ var _ = Describe("Flusher", func() {
 	BeforeEach(func() {
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockRepo = repo.NewMockRepo(mockCtrl)
+		cntx = context.Background()
 	})
 
 	AfterEach(func() {
@@ -28,12 +31,12 @@ var _ = Describe("Flusher", func() {
 
 	Context("With valid entities slice", func() {
 		It("should all save", func() {
-			mockRepo.EXPECT().AddEntertainments(entities[0:2]).Return(nil).Times(1)
-			mockRepo.EXPECT().AddEntertainments(entities[2:4]).Return(nil).Times(1)
-			mockRepo.EXPECT().AddEntertainments(entities[4:]).Return(nil).Times(1)
+			mockRepo.EXPECT().AddEntertainments(cntx, entities[0:2]).Return(nil).Times(1)
+			mockRepo.EXPECT().AddEntertainments(cntx, entities[2:4]).Return(nil).Times(1)
+			mockRepo.EXPECT().AddEntertainments(cntx, entities[4:]).Return(nil).Times(1)
 
 			flusher := NewFlusher(2, mockRepo)
-			notSaved := flusher.Flush(entities)
+			notSaved := flusher.Flush(cntx, entities)
 
 			assert.Nil(GinkgoT(), notSaved)
 		})
@@ -41,12 +44,12 @@ var _ = Describe("Flusher", func() {
 
 	Context("With some errors entities slice", func() {
 		It("should return errors", func() {
-			mockRepo.EXPECT().AddEntertainments(entities[0:2]).Return(nil).Times(1)
-			mockRepo.EXPECT().AddEntertainments(entities[2:4]).Return(nil).Times(1)
-			mockRepo.EXPECT().AddEntertainments(entities[4:]).Return(errors.New("Can`t save slice")).Times(1)
+			mockRepo.EXPECT().AddEntertainments(cntx, entities[0:2]).Return(nil).Times(1)
+			mockRepo.EXPECT().AddEntertainments(cntx, entities[2:4]).Return(nil).Times(1)
+			mockRepo.EXPECT().AddEntertainments(cntx, entities[4:]).Return(errors.New("Can`t save slice")).Times(1)
 
 			flusher := NewFlusher(2, mockRepo)
-			err := flusher.Flush(entities)
+			err := flusher.Flush(cntx, entities)
 
 			assert.Error(GinkgoT(), err)
 		})

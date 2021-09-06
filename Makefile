@@ -5,7 +5,7 @@ DBSTRING:="postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5434/$(POS
 
 .PHONY: build
 build: deps
-	GOBIN=$(LOCAL_BIN) go build -o $(LOCAL_BIN)/ova-entertainment-api cmd/ova-entertainment-api/main.go
+	GOBIN=$(LOCAL_BIN) go build -ldflags="-X 'main.GrpcPort=:8082'" -o $(LOCAL_BIN)/ova-entertainment-api cmd/ova-entertainment-api/main.go
 
 .PHONY: deps
 deps: .install-go-deps
