@@ -75,14 +75,6 @@ func initMetrics() {
 	}
 }
 
-//func initHealthcheck() {
-//	http.Handle("/healthcheck", healthcheck.Handler())
-//	err := http.ListenAndServe(":8080", nil)
-//	if err != nil {
-//		log.Fatalf("failed to serve: %v", err)
-//	}
-//}
-
 // Инициализация очереди сообщений
 func initKafka() kafka.Producer {
 	conf, err := config.LoadEnvConfig(".")
