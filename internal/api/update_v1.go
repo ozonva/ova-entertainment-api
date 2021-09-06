@@ -10,9 +10,13 @@ import (
 )
 
 // UpdateEntertainmentV1 Обновление сущности
-func (s *ApiServer) UpdateEntertainmentV1(ctx context.Context, req *desc.UpdateEntertainmentV1Request) (*desc.EntertainmentV1Response, error) {
+func (s *ApiServer) UpdateEntertainmentV1(ctx context.Context, req *desc.UpdateEntertainmentV1Request) (res *desc.EntertainmentV1Response, err error) {
 
-	defer s.metrics.IncCounterSuccessResponseForUpdate()
+	defer func() {
+		if err == nil {
+			s.metrics.IncCounterSuccessResponseForUpdate()
+		}
+	}()
 
 	log.Info().
 		Caller().

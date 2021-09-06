@@ -8,9 +8,13 @@ import (
 
 // ListEntertainmentsV1 Получение списка сущностей
 // Успешные ответы отправляются в метрику
-func (s *ApiServer) ListEntertainmentsV1(ctx context.Context, req *desc.ListEntertainmentV1Request) (*desc.ListEntertainmentsV1Response, error) {
+func (s *ApiServer) ListEntertainmentsV1(ctx context.Context, req *desc.ListEntertainmentV1Request) (res *desc.ListEntertainmentsV1Response, err error) {
 
-	defer s.metrics.IncCounterSuccessResponseForList()
+	defer func() {
+		if err == nil {
+			s.metrics.IncCounterSuccessResponseForList()
+		}
+	}()
 
 	log.Info().
 		Caller().

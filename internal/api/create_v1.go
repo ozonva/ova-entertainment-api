@@ -13,9 +13,13 @@ import (
 
 // CreateEntertainmentV1 Добавление сущности в базу и в очередь сообщений
 // При успешном добавлении отправляется метрика
-func (s *ApiServer) CreateEntertainmentV1(ctx context.Context, req *desc.CreateEntertainmentV1Request) (*emptypb.Empty, error) {
+func (s *ApiServer) CreateEntertainmentV1(ctx context.Context, req *desc.CreateEntertainmentV1Request) (res *emptypb.Empty, err error) {
 
-	defer s.metrics.IncCounterSuccessResponseForCreate()
+	defer func() {
+		if err == nil {
+			s.metrics.IncCounterSuccessResponseForCreate()
+		}
+	}()
 
 	log.Info().
 		Caller().
@@ -29,7 +33,7 @@ func (s *ApiServer) CreateEntertainmentV1(ctx context.Context, req *desc.CreateE
 	defer saver.Close()
 
 	model := models.New(req.UserID, req.Title, req.Description)
-	err := saver.Save(model)
+	err = saver.Save(model)
 	if err != nil {
 		log.Error().Err(err).Msg("")
 		return nil, err

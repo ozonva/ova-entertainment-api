@@ -9,16 +9,20 @@ import (
 )
 
 // RemoveEntertainmentV1 Удаление сущности
-func (s *ApiServer) RemoveEntertainmentV1(ctx context.Context, req *desc.RemoveEntertainmentV1Request) (*emptypb.Empty, error) {
+func (s *ApiServer) RemoveEntertainmentV1(ctx context.Context, req *desc.RemoveEntertainmentV1Request) (res *emptypb.Empty, err error) {
 
-	defer s.metrics.IncCounterSuccessResponseForRemove()
+	defer func() {
+		if err == nil {
+			s.metrics.IncCounterSuccessResponseForRemove()
+		}
+	}()
 
 	log.Info().
 		Caller().
 		Uint64("UserID", req.ID).
 		Msg("")
 
-	err := s.repo.RemoveEntertainment(req.ID)
+	err = s.repo.RemoveEntertainment(req.ID)
 	if err != nil {
 		log.Error().Caller().Err(err).Msg("")
 		return nil, err

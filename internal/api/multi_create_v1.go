@@ -17,9 +17,13 @@ const bulksSize = uint(3)
 // Сущности добавляются в базу батчами по bulksSize
 // Батчи добавляются в трейсинг
 // Успешный результат отправляется в метрику
-func (s *ApiServer) MultiCreateEntertainmentV1(ctx context.Context, req *desc.MultiCreateEntertainmentV1Request) (*emptypb.Empty, error) {
+func (s *ApiServer) MultiCreateEntertainmentV1(ctx context.Context, req *desc.MultiCreateEntertainmentV1Request) (res *emptypb.Empty, err error) {
 
-	defer s.metrics.IncCounterSuccessResponseForMultiCreate()
+	defer func() {
+		if err == nil {
+			s.metrics.IncCounterSuccessResponseForMultiCreate()
+		}
+	}()
 
 	entertainments := make([]models.Entertainment, 0, len(req.Models))
 	for _, model := range req.Models {
@@ -35,7 +39,7 @@ func (s *ApiServer) MultiCreateEntertainmentV1(ctx context.Context, req *desc.Mu
 
 	bulks := utils.SplitToBulks(entertainments, bulksSize)
 	for _, slice := range bulks {
-		err := s.repo.AddEntertainments(slice)
+		err = s.repo.AddEntertainments(slice)
 		if err != nil {
 			return nil, err
 		}
