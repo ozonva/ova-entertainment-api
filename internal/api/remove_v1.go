@@ -11,7 +11,7 @@ import (
 // RemoveEntertainmentV1 Удаление сущности
 func (s *ApiServer) RemoveEntertainmentV1(ctx context.Context, req *desc.RemoveEntertainmentV1Request) (*emptypb.Empty, error) {
 
-	defer s.metrics.RemoveSuccessResponseIncCounter()
+	defer s.metrics.IncCounterSuccessResponseForRemove()
 
 	log.Info().
 		Caller().

@@ -10,7 +10,7 @@ import (
 // Успешные ответы отправляются в метрику
 func (s *ApiServer) ListEntertainmentsV1(ctx context.Context, req *desc.ListEntertainmentV1Request) (*desc.ListEntertainmentsV1Response, error) {
 
-	defer s.metrics.ListSuccessResponseIncCounter()
+	defer s.metrics.IncCounterSuccessResponseForList()
 
 	log.Info().
 		Caller().

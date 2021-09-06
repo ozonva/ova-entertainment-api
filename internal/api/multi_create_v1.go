@@ -19,7 +19,7 @@ const bulksSize = uint(3)
 // Успешный результат отправляется в метрику
 func (s *ApiServer) MultiCreateEntertainmentV1(ctx context.Context, req *desc.MultiCreateEntertainmentV1Request) (*emptypb.Empty, error) {
 
-	defer s.metrics.MultiCreateSuccessResponseIncCounter()
+	defer s.metrics.IncCounterSuccessResponseForMultiCreate()
 
 	entertainments := make([]models.Entertainment, 0, len(req.Models))
 	for _, model := range req.Models {

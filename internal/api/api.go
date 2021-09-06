@@ -1,4 +1,4 @@
-// Имплементация методов апи для grpc
+// Package api Имплементация методов апи для grpc
 package api
 
 import (

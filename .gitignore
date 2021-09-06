@@ -5,3 +5,4 @@
 .docker/db/pgdata
 coverage.*
 .docker
+cover.html

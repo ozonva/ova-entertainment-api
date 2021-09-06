@@ -58,7 +58,10 @@ func TestMain(m *testing.M) {
 
 	hostAndPort := resource.GetHostPort("5432/tcp")
 	databaseUrl := fmt.Sprintf("postgres://user_name:secret@%s/dbname?sslmode=disable", hostAndPort)
-	resource.Expire(120)
+	err = resource.Expire(120)
+	if err != nil {
+		log.Fatalf("Could not start resource: %s", err)
+	}
 
 	var dbConnect *sqlx.DB
 	pool.MaxWait = 120 * time.Second

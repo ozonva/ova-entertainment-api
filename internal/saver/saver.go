@@ -2,6 +2,7 @@ package saver
 
 import (
 	"errors"
+	"log"
 	"sync"
 	"time"
 
@@ -84,7 +85,10 @@ func (s *saver) flush() {
 	defer s.Unlock()
 
 	if len(s.models) > 0 {
-		s.flusher.Flush(s.models)
+		err := s.flusher.Flush(s.models)
+		if err != nil {
+			log.Fatalf("failed to listen: %v", err)
+		}
 		s.models = make([]models.Entertainment, 0, s.capacity)
 	}
 }

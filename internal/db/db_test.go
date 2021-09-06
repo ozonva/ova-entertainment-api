@@ -45,7 +45,10 @@ func TestMain(m *testing.M) {
 
 	log.Println("Connecting to database on url: ", databaseUrl)
 
-	resource.Expire(120)
+	err = resource.Expire(120)
+	if err != nil {
+		log.Fatalf("Could not start resource: %s", err)
+	}
 
 	pool.MaxWait = 120 * time.Second
 	if err = pool.Retry(func() error {

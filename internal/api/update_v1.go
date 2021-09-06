@@ -12,7 +12,7 @@ import (
 // UpdateEntertainmentV1 Обновление сущности
 func (s *ApiServer) UpdateEntertainmentV1(ctx context.Context, req *desc.UpdateEntertainmentV1Request) (*desc.EntertainmentV1Response, error) {
 
-	defer s.metrics.UpdateSuccessResponseIncCounter()
+	defer s.metrics.IncCounterSuccessResponseForUpdate()
 
 	log.Info().
 		Caller().

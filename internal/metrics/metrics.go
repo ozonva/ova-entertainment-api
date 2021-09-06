@@ -6,11 +6,11 @@ import (
 
 // Metrics интерфейс для отправки метрик
 type Metrics interface {
-	CreateSuccessResponseIncCounter()
-	MultiCreateSuccessResponseIncCounter()
-	UpdateSuccessResponseIncCounter()
-	ListSuccessResponseIncCounter()
-	RemoveSuccessResponseIncCounter()
+	IncCounterSuccessResponseForCreate()
+	IncCounterSuccessResponseForMultiCreate()
+	IncCounterSuccessResponseForUpdate()
+	IncCounterSuccessResponseForList()
+	IncCounterSuccessResponseForRemove()
 }
 
 type metrics struct {
@@ -21,28 +21,28 @@ type metrics struct {
 	removeCounter      prometheus.Counter
 }
 
-// CreateSuccessResponseIncCounter Инкремент метрики об успешном создании
-func (m *metrics) CreateSuccessResponseIncCounter() {
+// IncCounterSuccessResponseForCreate Инкремент метрики об успешном создании
+func (m *metrics) IncCounterSuccessResponseForCreate() {
 	m.createCounter.Inc()
 }
 
-// MultiCreateSuccessResponseIncCounter Инкремент метрики об успешном мульти создании
-func (m *metrics) MultiCreateSuccessResponseIncCounter() {
+// IncCounterSuccessResponseForMultiCreate Инкремент метрики об успешном мульти создании
+func (m *metrics) IncCounterSuccessResponseForMultiCreate() {
 	m.multiCreateCounter.Inc()
 }
 
-// UpdateSuccessResponseIncCounter Инкремент метрики об успешном обновлении
-func (m *metrics) UpdateSuccessResponseIncCounter() {
+// IncCounterSuccessResponseForUpdate Инкремент метрики об успешном обновлении
+func (m *metrics) IncCounterSuccessResponseForUpdate() {
 	m.updateCounter.Inc()
 }
 
-// ListSuccessResponseIncCounter Инкремент метрики об успешном получении списка
-func (m *metrics) ListSuccessResponseIncCounter() {
+// IncCounterSuccessResponseForList Инкремент метрики об успешном получении списка
+func (m *metrics) IncCounterSuccessResponseForList() {
 	m.listCounter.Inc()
 }
 
-// RemoveSuccessResponseIncCounter Инкремент метрики об успешном удалении
-func (m *metrics) RemoveSuccessResponseIncCounter() {
+// IncCounterSuccessResponseForRemove Инкремент метрики об успешном удалении
+func (m *metrics) IncCounterSuccessResponseForRemove() {
 	m.removeCounter.Inc()
 }
 

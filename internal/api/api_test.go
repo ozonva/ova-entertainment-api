@@ -43,7 +43,7 @@ var _ = Describe("Api", func() {
 				EventType: kafka.Create,
 				Value:     model,
 			}).Times(1)
-			mockMetrics.EXPECT().CreateSuccessResponseIncCounter().Times(1)
+			mockMetrics.EXPECT().IncCounterSuccessResponseForCreate().Times(1)
 
 			mockRepo.EXPECT().AddEntertainments([]models.Entertainment{model}).Return(nil).Times(1)
 
@@ -71,7 +71,7 @@ var _ = Describe("Api", func() {
 				EventType: kafka.Update,
 				Value:     model.ID,
 			}).Times(1)
-			mockMetrics.EXPECT().UpdateSuccessResponseIncCounter().Times(1)
+			mockMetrics.EXPECT().IncCounterSuccessResponseForUpdate().Times(1)
 
 			api := NewApiServer(mockRepo, mockProducer, mockMetrics)
 			_, err := api.UpdateEntertainmentV1(cntx, &desc.UpdateEntertainmentV1Request{
@@ -95,7 +95,7 @@ var _ = Describe("Api", func() {
 				EventType: kafka.Remove,
 				Value:     ID,
 			}).Times(1)
-			mockMetrics.EXPECT().RemoveSuccessResponseIncCounter().Times(1)
+			mockMetrics.EXPECT().IncCounterSuccessResponseForRemove().Times(1)
 
 			api := NewApiServer(mockRepo, mockProducer, mockMetrics)
 			_, err := api.RemoveEntertainmentV1(cntx, &desc.RemoveEntertainmentV1Request{ID: 1})
@@ -113,7 +113,7 @@ var _ = Describe("Api", func() {
 			models := dataProviderEntities()
 
 			mockRepo.EXPECT().ListEntertainments(limit, offset).Return(models, nil).Times(1)
-			mockMetrics.EXPECT().ListSuccessResponseIncCounter().Times(1)
+			mockMetrics.EXPECT().IncCounterSuccessResponseForList().Times(1)
 
 			api := NewApiServer(mockRepo, mockProducer, mockMetrics)
 			_, err := api.ListEntertainmentsV1(cntx, &desc.ListEntertainmentV1Request{

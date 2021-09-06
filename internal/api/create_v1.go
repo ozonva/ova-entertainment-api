@@ -15,7 +15,7 @@ import (
 // При успешном добавлении отправляется метрика
 func (s *ApiServer) CreateEntertainmentV1(ctx context.Context, req *desc.CreateEntertainmentV1Request) (*emptypb.Empty, error) {
 
-	defer s.metrics.CreateSuccessResponseIncCounter()
+	defer s.metrics.IncCounterSuccessResponseForCreate()
 
 	log.Info().
 		Caller().

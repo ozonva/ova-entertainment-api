@@ -33,62 +33,62 @@ func (m *MockMetrics) EXPECT() *MockMetricsMockRecorder {
 	return m.recorder
 }
 
-// CreateSuccessResponseIncCounter mocks base method.
-func (m *MockMetrics) CreateSuccessResponseIncCounter() {
+// IncCounterSuccessResponseForCreate mocks base method.
+func (m *MockMetrics) IncCounterSuccessResponseForCreate() {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "CreateSuccessResponseIncCounter")
+	m.ctrl.Call(m, "IncCounterSuccessResponseForCreate")
 }
 
-// CreateSuccessResponseIncCounter indicates an expected call of CreateSuccessResponseIncCounter.
-func (mr *MockMetricsMockRecorder) CreateSuccessResponseIncCounter() *gomock.Call {
+// IncCounterSuccessResponseForCreate indicates an expected call of IncCounterSuccessResponseForCreate.
+func (mr *MockMetricsMockRecorder) IncCounterSuccessResponseForCreate() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSuccessResponseIncCounter", reflect.TypeOf((*MockMetrics)(nil).CreateSuccessResponseIncCounter))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncCounterSuccessResponseForCreate", reflect.TypeOf((*MockMetrics)(nil).IncCounterSuccessResponseForCreate))
 }
 
-// ListSuccessResponseIncCounter mocks base method.
-func (m *MockMetrics) ListSuccessResponseIncCounter() {
+// IncCounterSuccessResponseForList mocks base method.
+func (m *MockMetrics) IncCounterSuccessResponseForList() {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "ListSuccessResponseIncCounter")
+	m.ctrl.Call(m, "IncCounterSuccessResponseForList")
 }
 
-// ListSuccessResponseIncCounter indicates an expected call of ListSuccessResponseIncCounter.
-func (mr *MockMetricsMockRecorder) ListSuccessResponseIncCounter() *gomock.Call {
+// IncCounterSuccessResponseForList indicates an expected call of IncCounterSuccessResponseForList.
+func (mr *MockMetricsMockRecorder) IncCounterSuccessResponseForList() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSuccessResponseIncCounter", reflect.TypeOf((*MockMetrics)(nil).ListSuccessResponseIncCounter))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncCounterSuccessResponseForList", reflect.TypeOf((*MockMetrics)(nil).IncCounterSuccessResponseForList))
 }
 
-// MultiCreateSuccessResponseIncCounter mocks base method.
-func (m *MockMetrics) MultiCreateSuccessResponseIncCounter() {
+// IncCounterSuccessResponseForMultiCreate mocks base method.
+func (m *MockMetrics) IncCounterSuccessResponseForMultiCreate() {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "MultiCreateSuccessResponseIncCounter")
+	m.ctrl.Call(m, "IncCounterSuccessResponseForMultiCreate")
 }
 
-// MultiCreateSuccessResponseIncCounter indicates an expected call of MultiCreateSuccessResponseIncCounter.
-func (mr *MockMetricsMockRecorder) MultiCreateSuccessResponseIncCounter() *gomock.Call {
+// IncCounterSuccessResponseForMultiCreate indicates an expected call of IncCounterSuccessResponseForMultiCreate.
+func (mr *MockMetricsMockRecorder) IncCounterSuccessResponseForMultiCreate() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiCreateSuccessResponseIncCounter", reflect.TypeOf((*MockMetrics)(nil).MultiCreateSuccessResponseIncCounter))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncCounterSuccessResponseForMultiCreate", reflect.TypeOf((*MockMetrics)(nil).IncCounterSuccessResponseForMultiCreate))
 }
 
-// RemoveSuccessResponseIncCounter mocks base method.
-func (m *MockMetrics) RemoveSuccessResponseIncCounter() {
+// IncCounterSuccessResponseForRemove mocks base method.
+func (m *MockMetrics) IncCounterSuccessResponseForRemove() {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RemoveSuccessResponseIncCounter")
+	m.ctrl.Call(m, "IncCounterSuccessResponseForRemove")
 }
 
-// RemoveSuccessResponseIncCounter indicates an expected call of RemoveSuccessResponseIncCounter.
-func (mr *MockMetricsMockRecorder) RemoveSuccessResponseIncCounter() *gomock.Call {
+// IncCounterSuccessResponseForRemove indicates an expected call of IncCounterSuccessResponseForRemove.
+func (mr *MockMetricsMockRecorder) IncCounterSuccessResponseForRemove() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveSuccessResponseIncCounter", reflect.TypeOf((*MockMetrics)(nil).RemoveSuccessResponseIncCounter))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncCounterSuccessResponseForRemove", reflect.TypeOf((*MockMetrics)(nil).IncCounterSuccessResponseForRemove))
 }
 
-// UpdateSuccessResponseIncCounter mocks base method.
-func (m *MockMetrics) UpdateSuccessResponseIncCounter() {
+// IncCounterSuccessResponseForUpdate mocks base method.
+func (m *MockMetrics) IncCounterSuccessResponseForUpdate() {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "UpdateSuccessResponseIncCounter")
+	m.ctrl.Call(m, "IncCounterSuccessResponseForUpdate")
 }
 
-// UpdateSuccessResponseIncCounter indicates an expected call of UpdateSuccessResponseIncCounter.
-func (mr *MockMetricsMockRecorder) UpdateSuccessResponseIncCounter() *gomock.Call {
+// IncCounterSuccessResponseForUpdate indicates an expected call of IncCounterSuccessResponseForUpdate.
+func (mr *MockMetricsMockRecorder) IncCounterSuccessResponseForUpdate() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSuccessResponseIncCounter", reflect.TypeOf((*MockMetrics)(nil).UpdateSuccessResponseIncCounter))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncCounterSuccessResponseForUpdate", reflect.TypeOf((*MockMetrics)(nil).IncCounterSuccessResponseForUpdate))
 }
