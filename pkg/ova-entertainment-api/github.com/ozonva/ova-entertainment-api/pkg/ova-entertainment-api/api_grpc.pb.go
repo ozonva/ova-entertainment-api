@@ -24,6 +24,7 @@ type ApiClient interface {
 	UpdateEntertainmentV1(ctx context.Context, in *UpdateEntertainmentV1Request, opts ...grpc.CallOption) (*EntertainmentV1Response, error)
 	ListEntertainmentsV1(ctx context.Context, in *ListEntertainmentV1Request, opts ...grpc.CallOption) (*ListEntertainmentsV1Response, error)
 	RemoveEntertainmentV1(ctx context.Context, in *RemoveEntertainmentV1Request, opts ...grpc.CallOption) (*empty.Empty, error)
+	HealthCheckV1(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*HealthV1Response, error)
 }
 
 type apiClient struct {
@@ -79,6 +80,15 @@ func (c *apiClient) RemoveEntertainmentV1(ctx context.Context, in *RemoveEnterta
 	return out, nil
 }
 
+func (c *apiClient) HealthCheckV1(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*HealthV1Response, error) {
+	out := new(HealthV1Response)
+	err := c.cc.Invoke(ctx, "/ova.entertainment.api.api/HealthCheckV1", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ApiServer is the server API for Api service.
 // All implementations must embed UnimplementedApiServer
 // for forward compatibility
@@ -88,6 +98,7 @@ type ApiServer interface {
 	UpdateEntertainmentV1(context.Context, *UpdateEntertainmentV1Request) (*EntertainmentV1Response, error)
 	ListEntertainmentsV1(context.Context, *ListEntertainmentV1Request) (*ListEntertainmentsV1Response, error)
 	RemoveEntertainmentV1(context.Context, *RemoveEntertainmentV1Request) (*empty.Empty, error)
+	HealthCheckV1(context.Context, *empty.Empty) (*HealthV1Response, error)
 	mustEmbedUnimplementedApiServer()
 }
 
@@ -109,6 +120,9 @@ func (UnimplementedApiServer) ListEntertainmentsV1(context.Context, *ListEnterta
 }
 func (UnimplementedApiServer) RemoveEntertainmentV1(context.Context, *RemoveEntertainmentV1Request) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveEntertainmentV1 not implemented")
+}
+func (UnimplementedApiServer) HealthCheckV1(context.Context, *empty.Empty) (*HealthV1Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HealthCheckV1 not implemented")
 }
 func (UnimplementedApiServer) mustEmbedUnimplementedApiServer() {}
 
@@ -213,6 +227,24 @@ func _Api_RemoveEntertainmentV1_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Api_HealthCheckV1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApiServer).HealthCheckV1(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ova.entertainment.api.api/HealthCheckV1",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApiServer).HealthCheckV1(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Api_ServiceDesc is the grpc.ServiceDesc for Api service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -239,6 +271,10 @@ var Api_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveEntertainmentV1",
 			Handler:    _Api_RemoveEntertainmentV1_Handler,
+		},
+		{
+			MethodName: "HealthCheckV1",
+			Handler:    _Api_HealthCheckV1_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

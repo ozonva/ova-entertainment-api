@@ -13,6 +13,7 @@ import (
 	"github.com/ozonva/ova-entertainment-api/internal/api"
 	"github.com/ozonva/ova-entertainment-api/internal/config"
 	"github.com/ozonva/ova-entertainment-api/internal/db"
+	"github.com/ozonva/ova-entertainment-api/internal/healthcheck"
 	"github.com/ozonva/ova-entertainment-api/internal/kafka"
 	"github.com/ozonva/ova-entertainment-api/internal/metrics"
 	"github.com/ozonva/ova-entertainment-api/internal/repo"
@@ -120,9 +121,18 @@ func run(dbConn *sqlx.DB, sigc chan os.Signal) error {
 	producer := initKafka()
 	defer producer.Close()
 
+	// по ссылке или нет?
+	healthErrCh := make(chan struct{})
+	health := healthcheck.New(
+		*dbConn,
+		producer,
+	)
+	health.Watch(healthErrCh)
+	defer health.Close()
+
 	// init grpc and api
 	s := grpc.NewServer(grpc.ChainUnaryInterceptor(grpc_prometheus.UnaryServerInterceptor))
-	desc.RegisterApiServer(s, api.NewApiServer(repo.NewRepo(dbConn), producer, metrics.NewMetrics()))
+	desc.RegisterApiServer(s, api.NewApiServer(repo.NewRepo(dbConn), producer, metrics.NewMetrics(), health))
 	grpc_prometheus.Register(s)
 
 	// init prometheus metrics
@@ -144,11 +154,21 @@ func run(dbConn *sqlx.DB, sigc chan os.Signal) error {
 		return nil
 	})
 
-	<-sigc
+	for {
+		select {
+		case <-healthErrCh:
+			cancel(s)
+			return nil
+		case <-sigc:
+			cancel(s)
+			return nil
+		}
+	}
+}
+
+func cancel(s *grpc.Server) {
 	zerologger.Log().Caller().Msg("Graceful shutdown")
 	s.GracefulStop()
-
-	return nil
 }
 
 func main() {

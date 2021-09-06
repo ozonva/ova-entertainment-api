@@ -12,6 +12,12 @@ service api {
     rpc UpdateEntertainmentV1(UpdateEntertainmentV1Request) returns (EntertainmentV1Response) {}
     rpc ListEntertainmentsV1(ListEntertainmentV1Request) returns (ListEntertainmentsV1Response) {}
     rpc RemoveEntertainmentV1(RemoveEntertainmentV1Request) returns (google.protobuf.Empty) {}
+    rpc HealthCheckV1(google.protobuf.Empty) returns (HealthV1Response) {}
+}
+
+message HealthV1Response {
+    string DB = 1;
+    string Kafka = 2;
 }
 
 message CreateEntertainmentV1Request {

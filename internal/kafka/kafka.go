@@ -21,7 +21,8 @@ type producer struct {
 type EventType int
 
 const (
-	Create EventType = iota
+	Ping EventType = iota
+	Create
 	MultiCreate
 	Update
 	Remove
