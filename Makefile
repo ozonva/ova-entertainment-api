@@ -65,6 +65,7 @@ mockgen:
 	cd internal/repo && mockgen -source=repo.go  -destination=mock_repo.go -package=repo
 	cd internal/metrics && mockgen -source=metrics.go  -destination=mock_metrics.go -package=metrics
 	cd internal/kafka && mockgen -source=kafka.go  -destination=mock_kafka.go -package=kafka
+	cd internal/healthcheck && mockgen -source=healthcheck.go  -destination=mock_healthcheck.go -package=healthcheck
 
 .PHONY: lint
 lint:
