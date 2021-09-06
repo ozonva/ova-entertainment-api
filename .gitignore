@@ -4,3 +4,4 @@
 .bin
 .docker/db/pgdata
 coverage.*
+.docker

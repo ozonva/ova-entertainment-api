@@ -4,22 +4,29 @@ import (
 	"context"
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
+	"github.com/ozonva/ova-entertainment-api/internal/kafka"
+	"github.com/ozonva/ova-entertainment-api/internal/metrics"
 	"github.com/ozonva/ova-entertainment-api/internal/models"
 	"github.com/ozonva/ova-entertainment-api/internal/repo"
 	desc "github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api/github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api"
 	"github.com/stretchr/testify/assert"
+	"time"
 )
 
 var _ = Describe("Api", func() {
 	var (
-		mockCtrl *gomock.Controller
-		mockRepo *repo.MockRepo
-		cntx     context.Context
+		mockCtrl     *gomock.Controller
+		mockRepo     *repo.MockRepo
+		mockProducer *kafka.MockProducer
+		mockMetrics  *metrics.MockMetrics
+		cntx         context.Context
 	)
 
 	BeforeEach(func() {
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockRepo = repo.NewMockRepo(mockCtrl)
+		mockProducer = kafka.NewMockProducer(mockCtrl)
+		mockMetrics = metrics.NewMockMetrics(mockCtrl)
 		cntx = context.Background()
 	})
 
@@ -30,11 +37,17 @@ var _ = Describe("Api", func() {
 	Context("API: CreateEntertainmentV1", func() {
 		It("should not error", func() {
 
-			mockRepo.EXPECT().AddEntertainments([]models.Entertainment{
-				models.New(2, "Title", "Description"),
-			}).Return(nil).Times(1)
+			model := models.New(2, "Title", "Description")
 
-			api := NewApiServer(mockRepo)
+			mockProducer.EXPECT().Send(kafka.Message{
+				EventType: kafka.Create,
+				Value:     model,
+			}).Times(1)
+			mockMetrics.EXPECT().CreateSuccessResponseIncCounter().Times(1)
+
+			mockRepo.EXPECT().AddEntertainments([]models.Entertainment{model}).Return(nil).Times(1)
+
+			api := NewApiServer(mockRepo, mockProducer, mockMetrics)
 			_, err := api.CreateEntertainmentV1(cntx, &desc.CreateEntertainmentV1Request{
 				UserID:      2,
 				Title:       "Title",
@@ -45,15 +58,23 @@ var _ = Describe("Api", func() {
 		})
 	})
 
-	Context("API: DescribeEntertainmentV1", func() {
+	Context("API: UpdateEntertainmentV1", func() {
 		It("should not error", func() {
 
 			model := models.New(2, "Title", "Description")
 			model.ID = 1
-			mockRepo.EXPECT().DescribeEntertainment(model).Return(&model, nil).Times(1)
+			model.Date = time.Now().Truncate(24*time.Hour).AddDate(0, 0, 7)
 
-			api := NewApiServer(mockRepo)
-			_, err := api.DescribeEntertainmentV1(cntx, &desc.DescribeEntertainmentV1Request{
+			mockRepo.EXPECT().UpdateEntertainment(model).Return(&model, nil).Times(1)
+
+			mockProducer.EXPECT().Send(kafka.Message{
+				EventType: kafka.Update,
+				Value:     model.ID,
+			}).Times(1)
+			mockMetrics.EXPECT().UpdateSuccessResponseIncCounter().Times(1)
+
+			api := NewApiServer(mockRepo, mockProducer, mockMetrics)
+			_, err := api.UpdateEntertainmentV1(cntx, &desc.UpdateEntertainmentV1Request{
 				ID:          1,
 				UserID:      2,
 				Title:       "Title",
@@ -70,7 +91,13 @@ var _ = Describe("Api", func() {
 			ID := uint64(1)
 			mockRepo.EXPECT().RemoveEntertainment(ID).Return(nil).Times(1)
 
-			api := NewApiServer(mockRepo)
+			mockProducer.EXPECT().Send(kafka.Message{
+				EventType: kafka.Remove,
+				Value:     ID,
+			}).Times(1)
+			mockMetrics.EXPECT().RemoveSuccessResponseIncCounter().Times(1)
+
+			api := NewApiServer(mockRepo, mockProducer, mockMetrics)
 			_, err := api.RemoveEntertainmentV1(cntx, &desc.RemoveEntertainmentV1Request{ID: 1})
 
 			assert.Nil(GinkgoT(), err)
@@ -86,8 +113,9 @@ var _ = Describe("Api", func() {
 			models := dataProviderEntities()
 
 			mockRepo.EXPECT().ListEntertainments(limit, offset).Return(models, nil).Times(1)
+			mockMetrics.EXPECT().ListSuccessResponseIncCounter().Times(1)
 
-			api := NewApiServer(mockRepo)
+			api := NewApiServer(mockRepo, mockProducer, mockMetrics)
 			_, err := api.ListEntertainmentsV1(cntx, &desc.ListEntertainmentV1Request{
 				Limit:  uint32(100),
 				Offset: uint32(10),

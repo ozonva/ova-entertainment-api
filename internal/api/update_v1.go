@@ -2,13 +2,20 @@ package api
 
 import (
 	"context"
+	"github.com/ozonva/ova-entertainment-api/internal/kafka"
 	"github.com/ozonva/ova-entertainment-api/internal/models"
 	desc "github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api/github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api"
 	"github.com/rs/zerolog/log"
 	"time"
 )
 
-func (s *ApiServer) DescribeEntertainmentV1(ctx context.Context, req *desc.DescribeEntertainmentV1Request) (*desc.EntertainmentV1Response, error) {
+func (s *ApiServer) UpdateEntertainmentV1(ctx context.Context, req *desc.UpdateEntertainmentV1Request) (res *desc.EntertainmentV1Response, err error) {
+
+	defer func() {
+		if err == nil {
+			s.metrics.UpdateSuccessResponseIncCounter()
+		}
+	}()
 
 	log.Info().
 		Caller().
@@ -18,7 +25,7 @@ func (s *ApiServer) DescribeEntertainmentV1(ctx context.Context, req *desc.Descr
 		Str("Description", req.Title).
 		Msg("")
 
-	entertainment, err := s.repo.DescribeEntertainment(models.Entertainment{
+	entertainment, err := s.repo.UpdateEntertainment(models.Entertainment{
 		ID:          req.ID,
 		UserID:      req.UserID,
 		Title:       req.Title,
@@ -27,6 +34,14 @@ func (s *ApiServer) DescribeEntertainmentV1(ctx context.Context, req *desc.Descr
 	})
 	if err != nil {
 		log.Error().Caller().Err(err).Msg("")
+		return nil, err
+	}
+
+	err = s.producer.Send(kafka.Message{
+		EventType: kafka.Update,
+		Value:     entertainment.ID,
+	})
+	if err != nil {
 		return nil, err
 	}
 

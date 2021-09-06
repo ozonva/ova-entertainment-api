@@ -34,7 +34,7 @@ var _ = Describe("Repo", func() {
 			ID := uint64(1)
 			result := sqlxmock.NewResult(1, 1)
 			mock.
-				ExpectExec(regexp.QuoteMeta(`DELETE FROM entertainments WHERE id = ?`)).
+				ExpectExec(regexp.QuoteMeta(`DELETE FROM entertainments WHERE id = $1`)).
 				WithArgs(ID).
 				WillReturnResult(result)
 
@@ -52,7 +52,7 @@ var _ = Describe("Repo", func() {
 
 			result := sqlxmock.NewResult(1, 1)
 			mock.
-				ExpectExec(regexp.QuoteMeta(`INSERT INTO entertainments (user_id,title,description) VALUES (?,?,?)`)).
+				ExpectExec(regexp.QuoteMeta(`INSERT INTO entertainments (user_id,title,description) VALUES ($1,$2,$3)`)).
 				WithArgs(model.UserID, model.Title, model.Description).
 				WillReturnResult(result)
 
@@ -63,18 +63,18 @@ var _ = Describe("Repo", func() {
 		})
 	})
 
-	Context("DescribeEntertainment", func() {
+	Context("UpdateEntertainment", func() {
 		It("should not error", func() {
 
 			model := models.New(1, "Title", "Description")
 			result := sqlxmock.NewResult(1, 1)
 			mock.
-				ExpectExec(regexp.QuoteMeta(`UPDATE entertainments SET title = ?, description = ? WHERE id = ?`)).
+				ExpectExec(regexp.QuoteMeta(`UPDATE entertainments SET title = $1, description = $2 WHERE id = $3`)).
 				WithArgs(model.Title, model.Description, model.ID).
 				WillReturnResult(result)
 
 			r := NewRepo(db)
-			_, err = r.DescribeEntertainment(model)
+			_, err = r.UpdateEntertainment(model)
 
 			assert.Nil(GinkgoT(), err)
 		})
