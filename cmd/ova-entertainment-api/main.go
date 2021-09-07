@@ -121,7 +121,6 @@ func run(dbConn *sqlx.DB, sigc chan os.Signal) error {
 	producer := initKafka()
 	defer producer.Close()
 
-	// по ссылке или нет?
 	healthErrCh := make(chan struct{})
 	health := healthcheck.New(
 		*dbConn,
