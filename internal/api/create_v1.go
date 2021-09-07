@@ -11,11 +11,13 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+// CreateEntertainmentV1 Добавление сущности в базу и в очередь сообщений
+// При успешном добавлении отправляется метрика
 func (s *ApiServer) CreateEntertainmentV1(ctx context.Context, req *desc.CreateEntertainmentV1Request) (res *emptypb.Empty, err error) {
 
 	defer func() {
 		if err == nil {
-			s.metrics.CreateSuccessResponseIncCounter()
+			s.metrics.IncCounterSuccessResponseForCreate()
 		}
 	}()
 
@@ -27,7 +29,7 @@ func (s *ApiServer) CreateEntertainmentV1(ctx context.Context, req *desc.CreateE
 		Msg("")
 
 	f := flusher.NewFlusher(2, s.repo)
-	saver := pgkserver.NewSaver(10, f)
+	saver := pgkserver.NewSaver(ctx, 10, f)
 	defer saver.Close()
 
 	model := models.New(req.UserID, req.Title, req.Description)

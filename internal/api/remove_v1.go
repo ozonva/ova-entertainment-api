@@ -8,11 +8,12 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+// RemoveEntertainmentV1 Удаление сущности
 func (s *ApiServer) RemoveEntertainmentV1(ctx context.Context, req *desc.RemoveEntertainmentV1Request) (res *emptypb.Empty, err error) {
 
 	defer func() {
 		if err == nil {
-			s.metrics.RemoveSuccessResponseIncCounter()
+			s.metrics.IncCounterSuccessResponseForRemove()
 		}
 	}()
 
@@ -21,7 +22,7 @@ func (s *ApiServer) RemoveEntertainmentV1(ctx context.Context, req *desc.RemoveE
 		Uint64("UserID", req.ID).
 		Msg("")
 
-	err = s.repo.RemoveEntertainment(req.ID)
+	err = s.repo.RemoveEntertainment(ctx, req.ID)
 	if err != nil {
 		log.Error().Caller().Err(err).Msg("")
 		return nil, err

@@ -7,12 +7,22 @@ import (
 	desc "github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api/github.com/ozonva/ova-entertainment-api/pkg/ova-entertainment-api"
 )
 
+// Entertainment Основная модель микросервиса
 type Entertainment struct {
-	ID          uint64 `db:"id"`
-	UserID      uint64 `db:"user_id"`
-	Title       string
+	// Уникальный индитификатор сущности
+	ID uint64 `db:"id"`
+
+	// Пользователь который создаль сущность
+	UserID uint64 `db:"user_id"`
+
+	// Заголовок
+	Title string
+
+	// Подробное описание
 	Description string
-	Date        time.Time
+
+	// Дата события
+	Date time.Time
 }
 
 func New(UserID uint64, title string, description string) Entertainment {
@@ -30,7 +40,7 @@ func (e *Entertainment) String() string {
 	return fmt.Sprintf("Entertainment name: %s, Description: %s", e.Title, e.Description)
 }
 
-// @todo должно быть какбудто не тут
+// Marshall Преобразовывает модель к ответу grpc
 func (e *Entertainment) Marshall() *desc.EntertainmentV1Response {
 	return &desc.EntertainmentV1Response{
 		ID:          e.ID,

@@ -5,6 +5,7 @@
 * Запуск `make run`
 * Генерация моков `mockgen -source=repo.go  -destination=mock_repo.go -package=repo`
 * Создание миграции `goose -s -dir migration create init sql`
+* Документация по внутренним пакетам `go doc -all ova-entertainment-api/internal/{name}`
 
 GUI
 * http://localhost:9000/ - kafka

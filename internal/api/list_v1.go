@@ -6,11 +6,13 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// ListEntertainmentsV1 Получение списка сущностей
+// Успешные ответы отправляются в метрику
 func (s *ApiServer) ListEntertainmentsV1(ctx context.Context, req *desc.ListEntertainmentV1Request) (res *desc.ListEntertainmentsV1Response, err error) {
 
 	defer func() {
 		if err == nil {
-			s.metrics.ListSuccessResponseIncCounter()
+			s.metrics.IncCounterSuccessResponseForList()
 		}
 	}()
 
@@ -20,7 +22,7 @@ func (s *ApiServer) ListEntertainmentsV1(ctx context.Context, req *desc.ListEnte
 		Uint32("Offset", req.Offset).
 		Msg("")
 
-	models, err := s.repo.ListEntertainments(req.Limit, req.Offset)
+	models, err := s.repo.ListEntertainments(ctx, req.Limit, req.Offset)
 	if err != nil {
 		log.Error().Caller().Err(err).Msg("")
 		return nil, err

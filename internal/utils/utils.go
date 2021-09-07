@@ -5,6 +5,7 @@ import (
 	"github.com/ozonva/ova-entertainment-api/internal/models"
 )
 
+// Split
 func Split(slice []int, size int) [][]int {
 
 	result := make([][]int, 0, (len(slice)+size-1)/size)
@@ -18,6 +19,7 @@ func Split(slice []int, size int) [][]int {
 	return result
 }
 
+// Flip
 func Flip(list map[int]string) (map[string]int, error) {
 	result := make(map[string]int)
 
@@ -31,6 +33,7 @@ func Flip(list map[int]string) (map[string]int, error) {
 	return result, nil
 }
 
+// Filter
 func Filter(slice []string, words []string) []string {
 
 	wordMap := make(map[string]struct{})
@@ -52,6 +55,7 @@ func Filter(slice []string, words []string) []string {
 	return result[:index]
 }
 
+// SplitToBulks Разделение слайса моделей на батчи
 func SplitToBulks(slice []models.Entertainment, size uint) [][]models.Entertainment {
 	batchSize := int(size)
 	result := make([][]models.Entertainment, 0, (len(slice)+batchSize-1)/batchSize)
@@ -64,6 +68,8 @@ func SplitToBulks(slice []models.Entertainment, size uint) [][]models.Entertainm
 	return result
 }
 
+// SliceToMap Конвертация слайса в мапу, ключ мапы будет userID
+// todo Исправить ключ UserID на ID
 func SliceToMap(slice []models.Entertainment) (map[uint64]models.Entertainment, error) {
 	result := make(map[uint64]models.Entertainment)
 

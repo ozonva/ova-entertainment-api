@@ -9,11 +9,12 @@ import (
 	"time"
 )
 
+// UpdateEntertainmentV1 Обновление сущности
 func (s *ApiServer) UpdateEntertainmentV1(ctx context.Context, req *desc.UpdateEntertainmentV1Request) (res *desc.EntertainmentV1Response, err error) {
 
 	defer func() {
 		if err == nil {
-			s.metrics.UpdateSuccessResponseIncCounter()
+			s.metrics.IncCounterSuccessResponseForUpdate()
 		}
 	}()
 
@@ -25,7 +26,7 @@ func (s *ApiServer) UpdateEntertainmentV1(ctx context.Context, req *desc.UpdateE
 		Str("Description", req.Title).
 		Msg("")
 
-	entertainment, err := s.repo.UpdateEntertainment(models.Entertainment{
+	entertainment, err := s.repo.UpdateEntertainment(ctx, models.Entertainment{
 		ID:          req.ID,
 		UserID:      req.UserID,
 		Title:       req.Title,

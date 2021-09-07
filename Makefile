@@ -5,7 +5,7 @@ DBSTRING:="postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5434/$(POS
 
 .PHONY: build
 build: deps
-	GOBIN=$(LOCAL_BIN) go build -o $(LOCAL_BIN)/ova-entertainment-api cmd/ova-entertainment-api/main.go
+	GOBIN=$(LOCAL_BIN) go build -ldflags="-X 'main.GrpcPort=:8082'" -o $(LOCAL_BIN)/ova-entertainment-api cmd/ova-entertainment-api/main.go
 
 .PHONY: deps
 deps: .install-go-deps
@@ -44,9 +44,32 @@ migrate-up:
 #for fun @todo manualcov
 .PHONY: create-badge
 create-badge:
-	go test ./... -coverprofile cover.out.tmp
+	GOBIN=$(LOCAL_BIN) go test ./... -coverprofile cover.out.tmp
+	GOBIN=$(LOCAL_BIN) go tool cover -html=cover.out.tmp -o cover.html
 	cat cover.out.tmp | grep -v "mock_" > coverage.out
-	go tool cover -func coverage.out | awk 'END {print $3+0}'
+	GOBIN=$(LOCAL_BIN) go tool cover -func coverage.out | awk 'END {print $3+0}'
 	rm cover.out.tmp
 	rm coverage.out
 	#gopherbadger -md="README.md" -manualcov=
+
+.PHONY: docs
+docs:
+	godoc -http=:6060
+
+.PHONY: gosec
+gosec:
+	gosec -exclude=G102 ./...
+
+.PHONY: mockgen
+mockgen:
+	cd internal/repo && mockgen -source=repo.go  -destination=mock_repo.go -package=repo
+	cd internal/metrics && mockgen -source=metrics.go  -destination=mock_metrics.go -package=metrics
+	cd internal/kafka && mockgen -source=kafka.go  -destination=mock_kafka.go -package=kafka
+	cd internal/healthcheck && mockgen -source=healthcheck.go  -destination=mock_healthcheck.go -package=healthcheck
+
+.PHONY: lint
+lint:
+	gosec -exclude=G102 ./...
+	go vet ./...
+	go fmt ./...
+	golangci-lint run ./...

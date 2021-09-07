@@ -1,39 +1,22 @@
-package repo
+package db
 
 import (
-	"context"
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	db2 "github.com/ozonva/ova-entertainment-api/internal/db"
-	"github.com/ozonva/ova-entertainment-api/internal/models"
-	"github.com/pressly/goose"
-	"log"
 	"os"
 	"testing"
 	"time"
 
+	_ "github.com/lib/pq"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
-	"github.com/stretchr/testify/assert"
+	log "github.com/sirupsen/logrus"
 )
 
-var r Repo
-
-var model1 = &models.Entertainment{
-	ID:          uint64(1),
-	UserID:      1,
-	Title:       "Title 1",
-	Description: "Description 1",
-}
-
-var model2 = &models.Entertainment{
-	ID:          uint64(2),
-	UserID:      2,
-	Title:       "Title 2",
-	Description: "Description 2",
-}
+var db *sqlx.DB
 
 func TestMain(m *testing.M) {
+
 	pool, err := dockertest.NewPool("")
 	if err != nil {
 		log.Fatalf("Could not connect to docker: %s", err)
@@ -59,15 +42,17 @@ func TestMain(m *testing.M) {
 
 	hostAndPort := resource.GetHostPort("5432/tcp")
 	databaseUrl := fmt.Sprintf("postgres://user_name:secret@%s/dbname?sslmode=disable", hostAndPort)
+
+	log.Println("Connecting to database on url: ", databaseUrl)
+
 	err = resource.Expire(120)
 	if err != nil {
 		log.Fatalf("Could not start resource: %s", err)
 	}
 
-	var dbConnect *sqlx.DB
 	pool.MaxWait = 120 * time.Second
 	if err = pool.Retry(func() error {
-		dbConnect, err = db2.Connect(databaseUrl)
+		db, err = Connect(databaseUrl)
 		if err != nil {
 			return err
 		}
@@ -76,23 +61,6 @@ func TestMain(m *testing.M) {
 		log.Fatalf("Could not connect to docker: %s", err)
 	}
 
-	err = goose.Run("up", dbConnect.DB, "../../migration")
-	if err != nil {
-		log.Fatalf("Goose say krya: %s", err)
-	}
-
-	pool.MaxWait = 120 * time.Second
-	if err = pool.Retry(func() error {
-		r = NewRepo(dbConnect)
-		return err
-	}); err != nil {
-		log.Fatalf("Could not connect to docker: %s", err.Error())
-	}
-
-	defer func() {
-		dbConnect.Close()
-	}()
-
 	code := m.Run()
 
 	if err := pool.Purge(resource); err != nil {
@@ -100,23 +68,4 @@ func TestMain(m *testing.M) {
 	}
 
 	os.Exit(code)
-}
-
-func TestCreate(t *testing.T) {
-	ctx := context.Background()
-	err := r.AddEntertainments(ctx, []models.Entertainment{*model1})
-	assert.NoError(t, err)
-}
-
-func TestUpdate(t *testing.T) {
-	ctx := context.Background()
-	model2.Title = "Title New"
-	_, err := r.UpdateEntertainment(ctx, *model2)
-	assert.NoError(t, err)
-}
-
-func TestDelete(t *testing.T) {
-	ctx := context.Background()
-	err := r.RemoveEntertainment(ctx, model1.ID)
-	assert.NoError(t, err)
 }

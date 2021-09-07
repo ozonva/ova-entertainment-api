@@ -4,12 +4,13 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+// Metrics интерфейс для отправки метрик
 type Metrics interface {
-	CreateSuccessResponseIncCounter()
-	MultiCreateSuccessResponseIncCounter()
-	UpdateSuccessResponseIncCounter()
-	ListSuccessResponseIncCounter()
-	RemoveSuccessResponseIncCounter()
+	IncCounterSuccessResponseForCreate()
+	IncCounterSuccessResponseForMultiCreate()
+	IncCounterSuccessResponseForUpdate()
+	IncCounterSuccessResponseForList()
+	IncCounterSuccessResponseForRemove()
 }
 
 type metrics struct {
@@ -20,23 +21,28 @@ type metrics struct {
 	removeCounter      prometheus.Counter
 }
 
-func (m *metrics) CreateSuccessResponseIncCounter() {
+// IncCounterSuccessResponseForCreate Инкремент метрики об успешном создании
+func (m *metrics) IncCounterSuccessResponseForCreate() {
 	m.createCounter.Inc()
 }
 
-func (m *metrics) MultiCreateSuccessResponseIncCounter() {
+// IncCounterSuccessResponseForMultiCreate Инкремент метрики об успешном мульти создании
+func (m *metrics) IncCounterSuccessResponseForMultiCreate() {
 	m.multiCreateCounter.Inc()
 }
 
-func (m *metrics) UpdateSuccessResponseIncCounter() {
+// IncCounterSuccessResponseForUpdate Инкремент метрики об успешном обновлении
+func (m *metrics) IncCounterSuccessResponseForUpdate() {
 	m.updateCounter.Inc()
 }
 
-func (m *metrics) ListSuccessResponseIncCounter() {
+// IncCounterSuccessResponseForList Инкремент метрики об успешном получении списка
+func (m *metrics) IncCounterSuccessResponseForList() {
 	m.listCounter.Inc()
 }
 
-func (m *metrics) RemoveSuccessResponseIncCounter() {
+// IncCounterSuccessResponseForRemove Инкремент метрики об успешном удалении
+func (m *metrics) IncCounterSuccessResponseForRemove() {
 	m.removeCounter.Inc()
 }
 
